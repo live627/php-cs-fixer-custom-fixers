@@ -1,0 +1,29 @@
+{
+    "name": "live627/php-cs-fixer-custom-fixers",
+    "description": "A set of custom fixers for PHP-CS-Fixer",
+    "license": "unlicense",
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.52",
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "phpunit/phpunit": "^13.1",
+        "php-cs-fixer/phpunit-constraint-isidenticalstring": "^1.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Live627\\PhpCsFixer\\CustomFixers\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpCsFixer\\Tests\\": "vendor/friendsofphp/php-cs-fixer/tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        },
+        "preferred-install": {
+            "friendsofphp/php-cs-fixer": "source"
+        }
+    }
+}
