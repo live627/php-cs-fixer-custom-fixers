@@ -31,11 +31,6 @@ use PhpCsFixer\Tokenizer\Tokens;
  * The fixer intentionally skips:
  *
  * - Superglobals
- * - Variable variables
- * - Variables referenced by compact()
- * - Variables referenced by extract()
- * - Variables referenced by parse_str()
- * - User-configured exclusions
  *
  * Exclusions can be configured using:
  *
@@ -47,11 +42,11 @@ use PhpCsFixer\Tokenizer\Tokens;
  * ```php
  * [
  *     'exclude' => [
- *         'smcFunc',
- *         'modSettings',
+ *         '$smcFunc',
+ *         '$modSettings',
  *     ],
  *     'exclude_patterns' => [
- *         '/^txt[A-Z]/',
+ *         '/^\$txt[A-Z]/',
  *     ],
  * ]
  * ```
@@ -60,7 +55,7 @@ use PhpCsFixer\Tokenizer\Tokens;
  *
  * ```php
  * $memberName = 1;
- * $currentUserId = 2;
+ * $currentUserID = 2;
  * ```
  *
  * becomes:
