@@ -191,12 +191,10 @@ final class SectionCommentsFixer extends AbstractFixer
 		return -110;
 	}
 
-	public function isCandidate(Tokens $tokens): bool 
+	public function isCandidate(Tokens $tokens): bool
 	{
 		return $tokens->isAnyTokenKindsFound(Token::getClassyTokenKinds());
 	}
-
-	public $timer=0;
 
 	/******************
 	 * Internal methods
@@ -237,13 +235,11 @@ final class SectionCommentsFixer extends AbstractFixer
 		foreach ($tokens as $key => $token) {
 			$id = $token->getId();
 
-			$this->timer += -hrtime(true);
-
 			// Build up the list of token types so that we can figure out
 			// which comment type we will want.
-			if (in_array(
+			if (\in_array(
 				$id,
-				empty($in) ? [
+				$in === [] ? [
 					T_PUBLIC,
 					T_PROTECTED,
 					T_PRIVATE,

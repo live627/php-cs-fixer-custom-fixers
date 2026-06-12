@@ -5,12 +5,16 @@ declare(strict_types=1);
 use Live627\PhpCsFixer\CustomFixers\SnakeCaseIdentifiersFixer;
 use PhpCsFixer\Tokenizer\Tokens;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 $classes = [
 	[
 		'Live627\PhpCsFixer\CustomFixers\SectionCommentsFixer',
 		'SectionCommentsFixerTest',
+	],
+	[
+		'Live627\PhpCsFixer\CustomFixers\ArrayKeyExistsToIssetFixer',
+		'ArrayKeyExistsToIssetFixerTest',
 	],
 ];
 
@@ -18,10 +22,10 @@ $lastFixer = null;
 
 foreach ($classes as [$class, $test]) {
 	$fixer = new $class();
-	require __DIR__ . '/../tests/' . $test . '.php';
+	require __DIR__ . '/tests/' . $test . '.php';
 
 	foreach ($test::provideFixCases() as $key => $code) {
-		$tokens = PhpCsFixer\Tokenizer\Tokens::fromCode($code[1]);
+		$tokens = PhpCsFixer\Tokenizer\Tokens::fromCode($code[1] ?? $code[0]);
 
 		$iterations = 1000;
 		$times = [];
@@ -83,6 +87,7 @@ foreach ($classes as [$class, $test]) {
 
 			$lastFixer = $fixerName;
 		}
+		global $tt ;echo'  '.(($tt??1000)/1000).'  ';
 
 		printf(
 			"%-40s %8d %10.2f %10.2f %10.2f %8.2f\n",
