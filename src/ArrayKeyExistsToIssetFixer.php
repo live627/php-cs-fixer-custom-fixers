@@ -78,7 +78,7 @@ final class ArrayKeyExistsToIssetFixer extends AbstractFixer
 				),
 			],
 			null,
-			'Changes behavior when the array element exists and contains null. Be sure to have unit tests that cover every possible permutation!'
+			'Changes behavior when the array element exists and contains null.  Be sure to have unit tests that cover every possible permutation!.'
 		);
 	}
 
