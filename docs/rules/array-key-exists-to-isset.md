@@ -6,7 +6,7 @@ Replaces array_key_exists() with isset().
 
 This rule is risky.
 
-Changes behavior when the array element exists and contains null. Be sure to have unit tests that cover every possible permutation!
+Changes behavior when the array element exists and contains null.  Be sure to have unit tests that cover every possible permutation!.
 
 ## Examples
 
