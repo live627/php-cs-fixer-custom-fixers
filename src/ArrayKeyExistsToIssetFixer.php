@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Live627\PhpCsFixer\CustomFixers;
 
 use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\Fixer\RiskyFixerInterface;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
 use PhpCsFixer\FixerDefinition\FixerDefinitionInterface;
@@ -68,17 +67,26 @@ use PhpCsFixer\Tokenizer\Tokens;
  */
 final class ArrayKeyExistsToIssetFixer extends AbstractFixer
 {
+	/****************
+	 * Public methods
+	 ****************/
+
+	public function getName(): string
+	{
+		return 'Live627/' . parent::getName();
+	}
+
 	public function getDefinition(): FixerDefinitionInterface
 	{
 		return new FixerDefinition(
 			'Replaces array_key_exists() with isset().',
 			[
 				new CodeSample(
-					"<?php\narray_key_exists('foo', \$array);\n"
+					"<?php\narray_key_exists('foo', \$array);\n",
 				),
 			],
 			null,
-			'Changes behavior when the array element exists and contains null.  Be sure to have unit tests that cover every possible permutation!.'
+			'Changes behavior when the array element exists and contains null.  Be sure to have unit tests that cover every possible permutation!.',
 		);
 	}
 
@@ -96,6 +104,10 @@ final class ArrayKeyExistsToIssetFixer extends AbstractFixer
 	{
 		return $tokens->isTokenKindFound(T_STRING);
 	}
+
+	/******************
+	 * Internal methods
+	 ******************/
 
 	/**
 	 * Rewrites array_key_exists($key, $array) calls to isset($array[$key]).
@@ -136,30 +148,30 @@ final class ArrayKeyExistsToIssetFixer extends AbstractFixer
 			}
 
 			// Build: isset(<array-expression>[<key-expression>])
-			$replacementTokens = [
+			$replacement_tokens = [
 				new Token([T_ISSET, 'isset']),
 				new Token('('),
 			];
 
 			// Copy the second argument (array expression).
 			for ($i = $args['array_start']; $i <= $args['array_end']; ++$i) {
-				$replacementTokens[] = $tokens[$i];
+				$replacement_tokens[] = $tokens[$i];
 			}
 
-			$replacementTokens[] = new Token('[');
+			$replacement_tokens[] = new Token('[');
 
 			// Copy the first argument (key expression).
 			for ($i = $args['key_start']; $i < $args['key_end']; ++$i) {
-				$replacementTokens[] = $tokens[$i];
+				$replacement_tokens[] = $tokens[$i];
 			}
 
-			$replacementTokens[] = new Token(']');
-			$replacementTokens[] = new Token(')');
+			$replacement_tokens[] = new Token(']');
+			$replacement_tokens[] = new Token(')');
 
 			$replacements[] = [
 				'start' => $index,
 				'end' => $close,
-				'tokens' => $replacementTokens,
+				'tokens' => $replacement_tokens,
 			];
 
 			//
@@ -168,7 +180,7 @@ final class ArrayKeyExistsToIssetFixer extends AbstractFixer
 
 		global $tt;
 
-		$tt=-hrtime(true);
+		$tt = -hrtime(true);
 
 		// Apply replacements from the end of the file toward the beginning.
 		// This prevents earlier replacements from invalidating token indexes
@@ -177,7 +189,7 @@ final class ArrayKeyExistsToIssetFixer extends AbstractFixer
 			$tokens->overrideRange($replacement['start'], $replacement['end'], $replacement['tokens']);
 		}
 
-		$tt+=hrtime(true);
+		$tt += hrtime(true);
 	}
 
 	/**

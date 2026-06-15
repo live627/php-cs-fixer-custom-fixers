@@ -18,6 +18,10 @@
             "PhpCsFixer\\Tests\\": "vendor/friendsofphp/php-cs-fixer/tests/"
         }
     },
+    "scripts": {
+        "lint": "php-cs-fixer fix --dry-run --verbose --show-progress=dots",
+        "lint-fix": "php-cs-fixer fix --allow-risky yes"
+    },
     "config": {
         "allow-plugins": {
             "ergebnis/composer-normalize": true

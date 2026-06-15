@@ -10,12 +10,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversClass(SnakeCaseIdentifiersFixer::class)]
 final class SnakeCaseIdentifiersFixerTest extends AbstractFixerWithAliasedOptionsTestCase
 {
-	protected function createFixer(): AbstractFixer
-	{
-		return new SnakeCaseIdentifiersFixer();
-	}
-
 	#[DataProvider('provideFixCases')]
+	/****************
+	 * Public methods
+	 ****************/
+
 	public function testFix(string $expected, ?string $input = null, ?array $configuration = null): void
 	{
 		if ($configuration !== null) {
@@ -24,6 +23,10 @@ final class SnakeCaseIdentifiersFixerTest extends AbstractFixerWithAliasedOption
 
 		$this->doTest($expected, $input);
 	}
+
+	/***********************
+	 * Public static methods
+	 ***********************/
 
 	/**
 	 * @return iterable<array{0: string, 1?: string}>
@@ -52,19 +55,19 @@ final class SnakeCaseIdentifiersFixerTest extends AbstractFixerWithAliasedOption
 
 		yield 'phpdoc rename' => [
 			<<<'PHP'
-<?php
-/**
- * @param string $member_name
- */
-function test($member_name) {}
-PHP,
-		<<<'PHP'
-<?php
-/**
- * @param string $memberName
- */
-function test($memberName) {}
-PHP,
+				<?php
+				/**
+				 * @param string $member_name
+				 */
+				function test($member_name) {}
+				PHP,
+			<<<'PHP'
+				<?php
+				/**
+				 * @param string $memberName
+				 */
+				function test($memberName) {}
+				PHP,
 		];
 
 		yield 'multiple variables' => [
@@ -74,27 +77,27 @@ PHP,
 
 		yield 'phpdoc and variables' => [
 			<<<'PHP'
-<?php
+				<?php
 
-/**
- * @param string $member_name
- */
-function test($member_name)
-{
-	$current_user = $member_name;
-}
-PHP,
-		<<<'PHP'
-<?php
+				/**
+				 * @param string $member_name
+				 */
+				function test($member_name)
+				{
+					$current_user = $member_name;
+				}
+				PHP,
+			<<<'PHP'
+				<?php
 
-/**
- * @param string $memberName
- */
-function test($memberName)
-{
-	$currentUser = $memberName;
-}
-PHP,
+				/**
+				 * @param string $memberName
+				 */
+				function test($memberName)
+				{
+					$currentUser = $memberName;
+				}
+				PHP,
 		];
 
 		yield 'excluded variable' => [
@@ -116,5 +119,14 @@ PHP,
 				],
 			],
 		];
+	}
+
+	/******************
+	 * Internal methods
+	 ******************/
+
+	protected function createFixer(): AbstractFixer
+	{
+		return new SnakeCaseIdentifiersFixer();
 	}
 }

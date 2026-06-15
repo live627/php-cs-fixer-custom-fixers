@@ -105,6 +105,11 @@ final class SectionCommentsFixer extends AbstractFixer
 		$this->comment_regex = '/^\/[*\s]+(?:' . implode('|', $words) . ')[*\s]+\/$/';
 	}
 
+	public function getName(): string
+	{
+		return 'SMF/section_comments';
+	}
+
 	public function getDefinition(): FixerDefinitionInterface
 	{
 		return new FixerDefinition(

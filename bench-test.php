@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Live627\PhpCsFixer\CustomFixers\SnakeCaseIdentifiersFixer;
-use PhpCsFixer\Tokenizer\Tokens;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -22,10 +20,11 @@ $classes = [
 	],
 ];
 
-$lastFixer = null;
+$last_fixer = null;
 
 foreach ($classes as [$class, $test]) {
 	$fixer = new $class();
+
 	require __DIR__ . '/tests/' . $test . '.php';
 
 	foreach ($test::provideFixCases() as $key => $code) {
@@ -34,10 +33,9 @@ foreach ($classes as [$class, $test]) {
 		$iterations = 1000;
 		$times = [];
 		$warmups = 10;
-		$timerSamples = [];
+		$timer_samples = [];
 
-		for ($i = 0; $i < $iterations + $warmups; ++$i)
-		{
+		for ($i = 0; $i < $iterations + $warmups; ++$i) {
 			$f = new SplFileInfo('test.php');
 			$t = clone $tokens;
 
@@ -52,8 +50,8 @@ foreach ($classes as [$class, $test]) {
 			}
 
 			if ($i >= $warmups && property_exists($fixer, 'timer')) {
-				foreach ($fixer->timer as $section => $sectionTime) {
-					$timerSamples[$section][] = $sectionTime;
+				foreach ($fixer->timer as $section => $section_time) {
+					$timer_samples[$section][] = $section_time;
 					$fixer->timer[$section] = 0;
 				}
 			}
@@ -74,16 +72,16 @@ foreach ($classes as [$class, $test]) {
 
 		$stddev = sqrt($variance / count($times));
 
-		$fixerName = (new ReflectionClass($fixer))->getShortName();
+		$fixer_name = (new ReflectionClass($fixer))->getShortName();
 
-		if ($fixerName !== $lastFixer) {
-			if ($lastFixer !== null) {
+		if ($fixer_name !== $last_fixer) {
+			if ($last_fixer !== null) {
 				echo "\n";
 			}
 
 			echo "\n";
-			echo $fixerName . "\n";
-			echo str_repeat('=', strlen($fixerName)) . "\n\n";
+			echo $fixer_name . "\n";
+			echo str_repeat('=', strlen($fixer_name)) . "\n\n";
 
 			printf(
 				"%-40s %8s %10s %10s %10s %8s\n",
@@ -92,12 +90,12 @@ foreach ($classes as [$class, $test]) {
 				'Median',
 				'Avg',
 				'Max',
-				'CV%'
+				'CV%',
 			);
 
 			echo str_repeat('-', 95) . "\n";
 
-			$lastFixer = $fixerName;
+			$last_fixer = $fixer_name;
 		}
 
 		printf(
@@ -111,13 +109,13 @@ foreach ($classes as [$class, $test]) {
 		);
 	}
 
-if ($timerSamples !== []) {
+if ($timer_samples !== []) {
 	echo "\nSection Timings\n";
 	echo "===============\n\n";
 
 	$stats = [];
 
-	foreach ($timerSamples as $section => $samples) {
+	foreach ($timer_samples as $section => $samples) {
 		sort($samples);
 
 		$avg = array_sum($samples) / count($samples);
@@ -131,7 +129,7 @@ if ($timerSamples !== []) {
 
 	uasort(
 		$stats,
-		static fn (array $a, array $b): int => $b['avg'] <=> $a['avg'],
+		static fn(array $a, array $b): int => $b['avg'] <=> $a['avg'],
 	);
 
 	printf(

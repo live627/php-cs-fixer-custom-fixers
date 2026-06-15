@@ -1,4 +1,4 @@
-# Rule `array_key_exists_to_isset`
+# Rule `Live627/array_key_exists_to_isset`
 
 Replaces array_key_exists() with isset().
 
@@ -20,3 +20,10 @@ Changes behavior when the array element exists and contains null.  Be sure to ha
 -array_key_exists('foo', $array);
 +isset($array['foo']);
 ```
+
+## References
+
+- Class: [`Live627\PhpCsFixer\CustomFixers\ArrayKeyExistsToIssetFixer`](../src\ArrayKeyExistsToIssetFixer.php)
+  - `src\ArrayKeyExistsToIssetFixer.php`
+- Test: [`ArrayKeyExistsToIssetFixerTest`](../tests/ArrayKeyExistsToIssetFixerTest.php)
+  - `tests/ArrayKeyExistsToIssetFixerTest.php`

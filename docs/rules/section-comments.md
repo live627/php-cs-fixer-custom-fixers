@@ -1,4 +1,4 @@
-# Rule `section_comments`
+# Rule `SMF/section_comments`
 
 Inserts sectioning comments. This is meant to be used in combination with the `ordered_class_elements` rule.
 
@@ -9,11 +9,6 @@ Inserts sectioning comments. This is meant to be used in combination with the `o
 ```diff
 --- Original
 +++ Fixed
-@@ @@
- #Warning: Strings contain different line endings!
- <?php
- 
- class Foo
 @@ @@
  	 */
  	const MY_CONSTANT = 1;
@@ -86,12 +81,18 @@ Inserts sectioning comments. This is meant to be used in combination with the `o
  	 *
  	 */
  	public static function method4(): void {}
- 
++
 +	/*************************
 +	 * Internal static methods
 +	 *************************/
-+
+ 
  	/**
  	 *
- 	 */
 ```
+
+## References
+
+- Class: [`Live627\PhpCsFixer\CustomFixers\SectionCommentsFixer`](../src\SectionCommentsFixer.php)
+  - `src\SectionCommentsFixer.php`
+- Test: [`SectionCommentsFixerTest`](../tests/SectionCommentsFixerTest.php)
+  - `tests/SectionCommentsFixerTest.php`

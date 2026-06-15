@@ -12,6 +12,7 @@ $files = array_slice($argv, 1);
 
 if ($files === []) {
 	fwrite(STDERR, "Usage: php benchmark.php file1.php [file2.php ...]\n");
+
 	exit(1);
 }
 
@@ -21,11 +22,11 @@ $warmups = 10;
 printf(
 	"%-60s %8s %10s %10s %10s %8s\n",
 	'File',
-		'Tokens',
-		'Median',
-		'Avg',
-		'Max',
-		'CV%'
+	'Tokens',
+	'Median',
+	'Avg',
+	'Max',
+	'CV%',
 );
 
 echo str_repeat('-', 115) . "\n";
@@ -40,8 +41,8 @@ foreach ($files as $file) {
 	$tokens = Tokens::fromCode(file_get_contents($file));
 
 	$times = [];
-	$timerTotals = [];
-	$timerSamples = [];
+	$timer_totals = [];
+	$timer_samples = [];
 
 	for ($i = 0; $i < $iterations + $warmups; ++$i) {
 		$f = new SplFileInfo($file);
@@ -58,8 +59,8 @@ foreach ($files as $file) {
 		}
 
 		if ($i >= $warmups && property_exists($fixer, 'timer')) {
-			foreach ($fixer->timer as $section => $sectionTime) {
-				$timerSamples[$section][] = $sectionTime;
+			foreach ($fixer->timer as $section => $section_time) {
+				$timer_samples[$section][] = $section_time;
 				$fixer->timer[$section] = 0;
 			}
 		}
@@ -89,13 +90,13 @@ foreach ($files as $file) {
 		($stddev / $avg) * 100,
 	);
 
-	if ($timerSamples !== []) {
+	if ($timer_samples !== []) {
 		echo "\nSection Timings\n";
 		echo "===============\n\n";
 
 		$stats = [];
 
-		foreach ($timerSamples as $section => $samples) {
+		foreach ($timer_samples as $section => $samples) {
 			sort($samples);
 
 			$avg = array_sum($samples) / count($samples);
@@ -109,7 +110,7 @@ foreach ($files as $file) {
 
 		uasort(
 			$stats,
-			static fn (array $a, array $b): int => $b['avg'] <=> $a['avg'],
+			static fn(array $a, array $b): int => $b['avg'] <=> $a['avg'],
 		);
 
 		printf(

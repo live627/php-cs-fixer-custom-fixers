@@ -4,28 +4,14 @@ declare(strict_types=1);
 
 namespace Live627\PhpCsFixer\CustomFixers;
 
+use Live627\PhpCsFixer\CustomFixers\Analyzer\ClassyAnalyzer;
 use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\DocBlock\Annotation;
-use PhpCsFixer\DocBlock\DocBlock;
-use PhpCsFixer\Fixer\ConfigurableFixerInterface;
-use PhpCsFixer\Fixer\ConfigurableFixerTrait;
-use PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
-use PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
-use PhpCsFixer\FixerConfiguration\FixerConfigurationResolverInterface;
-use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
 use PhpCsFixer\FixerDefinition\FixerDefinitionInterface;
-use PhpCsFixer\Preg;
-use PhpCsFixer\Tokenizer\Analyzer\Analysis\NamespaceUseAnalysis;
-use Live627\PhpCsFixer\CustomFixers\Analyzer\ClassyAnalyzer;
-use PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer;
 use PhpCsFixer\Tokenizer\Analyzer\NamespaceUsesAnalyzer;
-use PhpCsFixer\Tokenizer\CT;
-use PhpCsFixer\Tokenizer\Processor\ImportProcessor;
 use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
-use PhpCsFixer\Tokenizer\TokensAnalyzer;
 
 /**
  * Replaces imports of PHP internal classes, interfaces, and traits with
@@ -51,11 +37,27 @@ use PhpCsFixer\Tokenizer\TokensAnalyzer;
  */
 final class GlobalNativeNamespaceImportFixer extends AbstractFixer
 {
+	/****************************
+	 * Internal static properties
+	 ****************************/
+
+	/** @var array<string, true>|null */
+	private static ?array $internal_classes = null;
+
+	/****************
+	 * Public methods
+	 ****************/
+
 	public function __construct()
 	{
 		parent::__construct();
 
-		self::$internalClasses ??= $this->buildInternalClassMap();
+		self::$internal_classes ??= $this->buildInternalClassMap();
+	}
+
+	public function getName(): string
+	{
+		return 'Live627/' . parent::getName();
 	}
 
 	public function getDefinition(): FixerDefinitionInterface
@@ -172,28 +174,32 @@ final class GlobalNativeNamespaceImportFixer extends AbstractFixer
 			&& $tokens->isMonolithicPhp();
 	}
 
+	/******************
+	 * Internal methods
+	 ******************/
+
 	protected function applyFix(\SplFileInfo $file, Tokens $tokens): void
 	{
-		$useDeclarations = (new NamespaceUsesAnalyzer())->getDeclarationsFromTokens($tokens);
+		$use_declarations = (new NamespaceUsesAnalyzer())->getDeclarationsFromTokens($tokens);
 		$slices = [];
-		$importsToRemove = [];
+		$imports_to_remove = [];
 
 		$global = [];
 
-		foreach ($useDeclarations as $declaration) {
+		foreach ($use_declarations as $declaration) {
 			if (!$declaration->isClass() || $declaration->isAliased()) {
 				continue;
 			}
 
 			$full_name = ltrim($declaration->getFullName(), '\\');
 
-			if (!isset(self::$internalClasses[strtolower($full_name)])) {
+			if (!isset(self::$internal_classes[strtolower($full_name)])) {
 				continue;
 			}
 
 			$qualified_name = '\\' . $full_name;
 
-			$importsToRemove[] = [
+			$imports_to_remove[] = [
 				$declaration->getStartIndex(),
 				$declaration->getEndIndex(),
 			];
@@ -202,12 +208,12 @@ final class GlobalNativeNamespaceImportFixer extends AbstractFixer
 			$global[strtolower($full_name)] = $qualified_name;
 		}
 
-		if ([] === $global) {
+		if ($global === []) {
 			return;
 		}
 
 		$analyzer = new ClassyAnalyzer();
-		$start = $importsToRemove === [] ? 0 : array_last($importsToRemove)[1];
+		$start = $imports_to_remove === [] ? 0 : array_last($imports_to_remove)[1];
 
 		for ($index = $tokens->count() - 1; $index >= $start; --$index) {
 			$token = $tokens[$index];
@@ -240,7 +246,7 @@ final class GlobalNativeNamespaceImportFixer extends AbstractFixer
 			$slices[$index] = new Token([\T_NS_SEPARATOR, '\\']);
 		}
 
-		foreach ($importsToRemove as [$start, $end]) {
+		foreach ($imports_to_remove as [$start, $end]) {
 			$tokens->clearRange($start, $end + 1);
 		}
 
@@ -248,11 +254,6 @@ final class GlobalNativeNamespaceImportFixer extends AbstractFixer
 			$tokens->insertSlices($slices);
 		}
 	}
-
-	/**
-	 * @var array<string, true>|null
-	 */
-	private static ?array $internalClasses = null;
 
 	/**
 	 * @return array<string, true>
@@ -265,7 +266,7 @@ final class GlobalNativeNamespaceImportFixer extends AbstractFixer
 			array_merge(
 				get_declared_classes(),
 				get_declared_interfaces(),
-				get_declared_traits()
+				get_declared_traits(),
 			) as $name
 		) {
 			$reflection = new \ReflectionClass($name);

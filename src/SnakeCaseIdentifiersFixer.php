@@ -98,14 +98,17 @@ final class SnakeCaseIdentifiersFixer extends AbstractFixer implements Configura
 	 * Internal properties
 	 *********************/
 
-	/**
-	 * Compiled exclusion matcher.
-	 */
+	/** Compiled exclusion matcher. */
 	private string $exclude_pattern = '';
 
 	/****************
 	 * Public methods
 	 ****************/
+
+	public function getName(): string
+	{
+		return 'Live627/' . parent::getName();
+	}
 
 	public function getPriority(): int
 	{

@@ -1,4 +1,4 @@
-# Rule `global_native_namespace_import`
+# Rule `Live627/global_native_namespace_import`
 
 Fully qualifies references to PHP internal classes, interfaces, and traits and removes redundant import statements.
 
@@ -111,3 +111,10 @@ Fully qualifies references to PHP internal classes, interfaces, and traits and r
  		yield $this->user;
  	}
 ```
+
+## References
+
+- Class: [`Live627\PhpCsFixer\CustomFixers\GlobalNativeNamespaceImportFixer`](../src\GlobalNativeNamespaceImportFixer.php)
+  - `src\GlobalNativeNamespaceImportFixer.php`
+- Test: [`GlobalNativeNamespaceImportFixerTest`](../tests/GlobalNativeNamespaceImportFixerTest.php)
+  - `tests/GlobalNativeNamespaceImportFixerTest.php`

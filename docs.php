@@ -3,20 +3,20 @@
 declare(strict_types=1);
 
 use PhpCsFixer\Fixer\ConfigurableFixerInterface;
-use PhpCsFixer\FixerDefinition\CodeSampleInterface;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$srcDir = __DIR__ . '/src';
-$docsDir = __DIR__ . '/docs/rules';
+$src_dir = __DIR__ . '/src';
+$docs_dir = __DIR__ . '/docs/rules';
 
-@mkdir($docsDir, 0777, true);
+@mkdir($docs_dir, 0777, true);
 
 $iterator = new RecursiveIteratorIterator(
-	new RecursiveDirectoryIterator($srcDir),
+	new RecursiveDirectoryIterator($src_dir),
 );
+$fixers = [];
 
 foreach ($iterator as $file) {
 	if (!$file->isFile() || $file->getExtension() !== 'php') {
@@ -24,7 +24,7 @@ foreach ($iterator as $file) {
 	}
 
 	$relative = str_replace(
-		[$srcDir . DIRECTORY_SEPARATOR, '.php', DIRECTORY_SEPARATOR],
+		[$src_dir . DIRECTORY_SEPARATOR, '.php', DIRECTORY_SEPARATOR],
 		['', '', '\\'],
 		$file->getPathname(),
 	);
@@ -46,13 +46,23 @@ foreach ($iterator as $file) {
 	}
 
 	$definition = $fixer->getDefinition();
+	$rule_name = $fixer->getName();
+	$filename = preg_replace(
+		'/[^a-z0-9]+/',
+		'-',
+		strtolower(substr($rule_name, strpos($rule_name, '/') + 1)),
+	);
 
-	$ruleName = $fixer->getName();
-	$filename = preg_replace('/[^a-z0-9]+/', '-', strtolower($ruleName));
+	$fixers[] = [
+		'name' => $fixer->getName(),
+		'class' => $fixer::class,
+		'file' => $filename . '.md',
+		'summary' => $definition->getSummary(),
+	];
 
 	$markdown = [];
 
-	$markdown[] = '# Rule `' . $ruleName . '`';
+	$markdown[] = '# Rule `' . $rule_name . '`';
 	$markdown[] = '';
 
 	$markdown[] = $definition->getSummary();
@@ -123,7 +133,7 @@ foreach ($iterator as $file) {
 
 		$differ = new Differ(
 			new UnifiedDiffOutputBuilder(
-				"--- Original\n+++ Fixed\n"
+				"--- Original\n+++ Fixed\n",
 			),
 		);
 
@@ -144,10 +154,73 @@ foreach ($iterator as $file) {
 		$markdown[] = '';
 	}
 
+	$markdown[] = '## References';
+	$markdown[] = '';
+
+	$reflection = new ReflectionClass($fixer);
+
+	$class_path = str_replace(
+		__DIR__ . DIRECTORY_SEPARATOR,
+		'',
+		$reflection->getFileName(),
+	);
+
+	$test_path = 'tests/' . $reflection->getShortName() . 'Test.php';
+
+	$markdown[] = '- Class: [`' . $reflection->getName() . '`](../' . $class_path . ')';
+	$markdown[] = '  - `' . $class_path . '`';
+
+	if (is_file(__DIR__ . '/' . $test_path)) {
+		$markdown[] = '- Test: [`' . $reflection->getShortName() . 'Test`](../' . $test_path . ')';
+		$markdown[] = '  - `' . $test_path . '`';
+	}
+
+	$markdown[] = '';
+
 	file_put_contents(
-		$docsDir . '/' . $filename . '.md',
+		$docs_dir . '/' . $filename . '.md',
 		implode("\n", $markdown),
 	);
 
 	echo "Generated {$filename}.md\n";
 }
+
+usort(
+	$fixers,
+	static fn(array $a, array $b): int => strcmp($a['name'], $b['name']),
+);
+
+$rules = [];
+
+foreach ($fixers as $fixer) {
+	$rules[] = sprintf(
+		"- [`%s`](docs/rules/%s) (`%s`)\n   - %s\n",
+		$fixer['name'],
+		$fixer['file'],
+		$fixer['class'],
+		$fixer['summary'],
+	);
+}
+
+$replacement = implode(
+	"\n",
+	[
+		'<!-- BEGIN AUTO-GENERATED RULES -->',
+		'',
+		'## Available Rules',
+		'',
+		...$rules,
+		'<!-- END AUTO-GENERATED RULES -->',
+	],
+);
+
+$readme_file = __DIR__ . '/README.md';
+$readme = file_get_contents($readme_file);
+
+$readme = preg_replace(
+	'/<!-- BEGIN AUTO-GENERATED RULES -->.*?<!-- END AUTO-GENERATED RULES -->/s',
+	$replacement,
+	$readme,
+);
+
+file_put_contents($readme_file, $readme);

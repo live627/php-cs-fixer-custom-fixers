@@ -11,12 +11,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversClass(SectionCommentsFixer::class)]
 final class SectionCommentsFixerTest extends AbstractFixerTestCase
 {
-	protected function createFixer(): AbstractFixer
-	{
-		return new SectionCommentsFixer();
-	}
-
 	#[DataProvider('provideFixCases')]
+	/****************
+	 * Public methods
+	 ****************/
+
 	public function testFix(
 		string $expected,
 		?string $input = null,
@@ -24,880 +23,893 @@ final class SectionCommentsFixerTest extends AbstractFixerTestCase
 		$this->doTest($expected, $input);
 	}
 
+	/***********************
+	 * Public static methods
+	 ***********************/
+
 	public static function provideFixCases(): iterable
 	{
 		yield 'all sections with phpdocs and enum' => [
 			<<<'PHP'
-<?php
+				<?php
 
-enum Status
-{
-	/************
-	 * Enum cases
-	 ************/
+				enum Status
+				{
+					/************
+					 * Enum cases
+					 ************/
 
-	/**
-	 * Draft.
-	 */
-	case Draft;
+					/**
+					 * Draft.
+					 */
+					case Draft;
 
-	/**
-	 * Published.
-	 */
-	case Published;
+					/**
+					 * Published.
+					 */
+					case Published;
 
-	/**
-	 * Archived.
-	 */
-	case Archived;
-}
+					/**
+					 * Archived.
+					 */
+					case Archived;
+				}
 
-class Foo
-{
-	/*****************
-	 * Class constants
-	 *****************/
+				class Foo
+				{
+					/*****************
+					 * Class constants
+					 *****************/
 
-	/**
-	 * Constant 1.
-	 */
-	public const CONST_ONE = 1;
+					/**
+					 * Constant 1.
+					 */
+					public const CONST_ONE = 1;
 
-	/**
-	 * Constant 2.
-	 */
-	public const CONST_TWO = 2;
+					/**
+					 * Constant 2.
+					 */
+					public const CONST_TWO = 2;
 
-	/**
-	 * Constant 3.
-	 */
-	public const CONST_THREE = 3;
+					/**
+					 * Constant 3.
+					 */
+					public const CONST_THREE = 3;
 
-	/*******************
-	 * Public properties
-	 *******************/
+					/*******************
+					 * Public properties
+					 *******************/
 
-	/**
-	 * Property 1.
-	 */
-	public string $publicOne;
+					/**
+					 * Property 1.
+					 */
+					public string $publicOne;
 
-	/**
-	 * Property 2.
-	 */
-	public string $publicTwo;
+					/**
+					 * Property 2.
+					 */
+					public string $publicTwo;
 
-	/**
-	 * Property 3.
-	 */
-	public string $publicThree;
+					/**
+					 * Property 3.
+					 */
+					public string $publicThree;
 
-	/**************************
-	 * Public static properties
-	 **************************/
+					/**************************
+					 * Public static properties
+					 **************************/
 
-	/**
-	 * Static property 1.
-	 */
-	public static string $publicStaticOne;
+					/**
+					 * Static property 1.
+					 */
+					public static string $publicStaticOne;
 
-	/**
-	 * Static property 2.
-	 */
-	public static string $publicStaticTwo;
+					/**
+					 * Static property 2.
+					 */
+					public static string $publicStaticTwo;
 
-	/**
-	 * Static property 3.
-	 */
-	public static string $publicStaticThree;
+					/**
+					 * Static property 3.
+					 */
+					public static string $publicStaticThree;
 
-	/*********************
-	 * Internal properties
-	 *********************/
+					/*********************
+					 * Internal properties
+					 *********************/
 
-	/**
-	 * Protected property.
-	 */
-	protected string $protectedOne;
+					/**
+					 * Protected property.
+					 */
+					protected string $protectedOne;
 
-	/**
-	 * Private property.
-	 */
-	private string $privateOne;
+					/**
+					 * Private property.
+					 */
+					private string $privateOne;
 
-	/**
-	 * Protected property.
-	 */
-	protected string $protectedTwo;
+					/**
+					 * Protected property.
+					 */
+					protected string $protectedTwo;
 
-	/****************************
-	 * Internal static properties
-	 ****************************/
+					/****************************
+					 * Internal static properties
+					 ****************************/
 
-	/**
-	 * Protected static property.
-	 */
-	protected static string $protectedStaticOne;
+					/**
+					 * Protected static property.
+					 */
+					protected static string $protectedStaticOne;
 
-	/**
-	 * Private static property.
-	 */
-	private static string $privateStaticOne;
+					/**
+					 * Private static property.
+					 */
+					private static string $privateStaticOne;
 
-	/**
-	 * Protected static property.
-	 */
-	protected static string $protectedStaticTwo;
+					/**
+					 * Protected static property.
+					 */
+					protected static string $protectedStaticTwo;
 
-	/****************
-	 * Public methods
-	 ****************/
+					/****************
+					 * Public methods
+					 ****************/
 
-	/**
-	 * Method 1.
-	 */
-	public function publicOne(): void {}
+					/**
+					 * Method 1.
+					 */
+					public function publicOne(): void {}
 
-	/**
-	 * Method 2.
-	 */
-	public function publicTwo(): void {}
+					/**
+					 * Method 2.
+					 */
+					public function publicTwo(): void {}
 
-	/**
-	 * Method 3.
-	 */
-	public function publicThree(): void {}
+					/**
+					 * Method 3.
+					 */
+					public function publicThree(): void {}
 
-	/***********************
-	 * Public static methods
-	 ***********************/
+					/***********************
+					 * Public static methods
+					 ***********************/
 
-	/**
-	 * Static method 1.
-	 */
-	public static function publicStaticOne(): void {}
+					/**
+					 * Static method 1.
+					 */
+					public static function publicStaticOne(): void {}
 
-	/**
-	 * Static method 2.
-	 */
-	public static function publicStaticTwo(): void {}
+					/**
+					 * Static method 2.
+					 */
+					public static function publicStaticTwo(): void {}
 
-	/**
-	 * Static method 3.
-	 */
-	public static function publicStaticThree(): void {}
+					/**
+					 * Static method 3.
+					 */
+					public static function publicStaticThree(): void {}
 
-	/******************
-	 * Internal methods
-	 ******************/
+					/******************
+					 * Internal methods
+					 ******************/
 
-	/**
-	 * Protected method.
-	 */
-	protected function protectedOne(): void {}
+					/**
+					 * Protected method.
+					 */
+					protected function protectedOne(): void {}
 
-	/**
-	 * Private method.
-	 */
-	private function privateOne(): void {}
+					/**
+					 * Private method.
+					 */
+					private function privateOne(): void {}
 
-	/**
-	 * Protected method.
-	 */
-	protected function protectedTwo(): void {}
+					/**
+					 * Protected method.
+					 */
+					protected function protectedTwo(): void {}
 
-	/*************************
-	 * Internal static methods
-	 *************************/
+					/*************************
+					 * Internal static methods
+					 *************************/
 
-	/**
-	 * Protected static method.
-	 */
-	protected static function protectedStaticOne(): void {}
+					/**
+					 * Protected static method.
+					 */
+					protected static function protectedStaticOne(): void {}
 
-	/**
-	 * Private static method.
-	 */
-	private static function privateStaticOne(): void {}
+					/**
+					 * Private static method.
+					 */
+					private static function privateStaticOne(): void {}
 
-	/**
-	 * Protected static method.
-	 */
-	protected static function protectedStaticTwo(): void {}
-}
-PHP,
+					/**
+					 * Protected static method.
+					 */
+					protected static function protectedStaticTwo(): void {}
+				}
+				PHP,
 			<<<'PHP'
-<?php
+				<?php
 
-enum Status
-{
-	/**
-	 * Draft.
-	 */
-	case Draft;
+				enum Status
+				{
+					/**
+					 * Draft.
+					 */
+					case Draft;
 
-	/**
-	 * Published.
-	 */
-	case Published;
+					/**
+					 * Published.
+					 */
+					case Published;
 
-	/**
-	 * Archived.
-	 */
-	case Archived;
-}
+					/**
+					 * Archived.
+					 */
+					case Archived;
+				}
 
-class Foo
-{
-	/**
-	 * Constant 1.
-	 */
-	public const CONST_ONE = 1;
+				class Foo
+				{
+					/**
+					 * Constant 1.
+					 */
+					public const CONST_ONE = 1;
 
-	/**
-	 * Constant 2.
-	 */
-	public const CONST_TWO = 2;
+					/**
+					 * Constant 2.
+					 */
+					public const CONST_TWO = 2;
 
-	/**
-	 * Constant 3.
-	 */
-	public const CONST_THREE = 3;
+					/**
+					 * Constant 3.
+					 */
+					public const CONST_THREE = 3;
 
-	/**
-	 * Property 1.
-	 */
-	public string $publicOne;
+					/**
+					 * Property 1.
+					 */
+					public string $publicOne;
 
-	/**
-	 * Property 2.
-	 */
-	public string $publicTwo;
+					/**
+					 * Property 2.
+					 */
+					public string $publicTwo;
 
-	/**
-	 * Property 3.
-	 */
-	public string $publicThree;
+					/**
+					 * Property 3.
+					 */
+					public string $publicThree;
 
-	/**
-	 * Static property 1.
-	 */
-	public static string $publicStaticOne;
+					/**
+					 * Static property 1.
+					 */
+					public static string $publicStaticOne;
 
-	/**
-	 * Static property 2.
-	 */
-	public static string $publicStaticTwo;
+					/**
+					 * Static property 2.
+					 */
+					public static string $publicStaticTwo;
 
-	/**
-	 * Static property 3.
-	 */
-	public static string $publicStaticThree;
+					/**
+					 * Static property 3.
+					 */
+					public static string $publicStaticThree;
 
-	/**
-	 * Protected property.
-	 */
-	protected string $protectedOne;
+					/**
+					 * Protected property.
+					 */
+					protected string $protectedOne;
 
-	/**
-	 * Private property.
-	 */
-	private string $privateOne;
+					/**
+					 * Private property.
+					 */
+					private string $privateOne;
 
-	/**
-	 * Protected property.
-	 */
-	protected string $protectedTwo;
+					/**
+					 * Protected property.
+					 */
+					protected string $protectedTwo;
 
-	/**
-	 * Protected static property.
-	 */
-	protected static string $protectedStaticOne;
+					/**
+					 * Protected static property.
+					 */
+					protected static string $protectedStaticOne;
 
-	/**
-	 * Private static property.
-	 */
-	private static string $privateStaticOne;
+					/**
+					 * Private static property.
+					 */
+					private static string $privateStaticOne;
 
-	/**
-	 * Protected static property.
-	 */
-	protected static string $protectedStaticTwo;
+					/**
+					 * Protected static property.
+					 */
+					protected static string $protectedStaticTwo;
 
-	/**
-	 * Method 1.
-	 */
-	public function publicOne(): void {}
+					/**
+					 * Method 1.
+					 */
+					public function publicOne(): void {}
 
-	/**
-	 * Method 2.
-	 */
-	public function publicTwo(): void {}
+					/**
+					 * Method 2.
+					 */
+					public function publicTwo(): void {}
 
-	/**
-	 * Method 3.
-	 */
-	public function publicThree(): void {}
+					/**
+					 * Method 3.
+					 */
+					public function publicThree(): void {}
 
-	/**
-	 * Static method 1.
-	 */
-	public static function publicStaticOne(): void {}
+					/**
+					 * Static method 1.
+					 */
+					public static function publicStaticOne(): void {}
 
-	/**
-	 * Static method 2.
-	 */
-	public static function publicStaticTwo(): void {}
+					/**
+					 * Static method 2.
+					 */
+					public static function publicStaticTwo(): void {}
 
-	/**
-	 * Static method 3.
-	 */
-	public static function publicStaticThree(): void {}
+					/**
+					 * Static method 3.
+					 */
+					public static function publicStaticThree(): void {}
 
-	/**
-	 * Protected method.
-	 */
-	protected function protectedOne(): void {}
+					/**
+					 * Protected method.
+					 */
+					protected function protectedOne(): void {}
 
-	/**
-	 * Private method.
-	 */
-	private function privateOne(): void {}
+					/**
+					 * Private method.
+					 */
+					private function privateOne(): void {}
 
-	/**
-	 * Protected method.
-	 */
-	protected function protectedTwo(): void {}
+					/**
+					 * Protected method.
+					 */
+					protected function protectedTwo(): void {}
 
-	/**
-	 * Protected static method.
-	 */
-	protected static function protectedStaticOne(): void {}
+					/**
+					 * Protected static method.
+					 */
+					protected static function protectedStaticOne(): void {}
 
-	/**
-	 * Private static method.
-	 */
-	private static function privateStaticOne(): void {}
+					/**
+					 * Private static method.
+					 */
+					private static function privateStaticOne(): void {}
 
-	/**
-	 * Protected static method.
-	 */
-	protected static function protectedStaticTwo(): void {}
-}
-PHP,
+					/**
+					 * Protected static method.
+					 */
+					protected static function protectedStaticTwo(): void {}
+				}
+				PHP,
 		];
 
 yield 'all sections and enum' => [
 	<<<'PHP'
-<?php
+		<?php
 
-enum Status
-{
-	/************
-	 * Enum cases
-	 ************/
+		enum Status
+		{
+			/************
+			 * Enum cases
+			 ************/
 
-	case Draft;
+			case Draft;
 
-	case Published;
+			case Published;
 
-	case Archived;
-}
+			case Archived;
+		}
 
-class Foo
-{
-	/*****************
-	 * Class constants
-	 *****************/
+		class Foo
+		{
+			/*****************
+			 * Class constants
+			 *****************/
 
-	public const CONST_ONE = 1;
+			public const CONST_ONE = 1;
 
-	public const CONST_TWO = 2;
+			public const CONST_TWO = 2;
 
-	public const CONST_THREE = 3;
+			public const CONST_THREE = 3;
 
-	/*******************
-	 * Public properties
-	 *******************/
+			/*******************
+			 * Public properties
+			 *******************/
 
-	public string $publicOne;
+			public string $publicOne;
 
-	public string $publicTwo;
+			public string $publicTwo;
 
-	public string $publicThree;
+			public string $publicThree;
 
-	/**************************
-	 * Public static properties
-	 **************************/
+			/**************************
+			 * Public static properties
+			 **************************/
 
-	public static string $publicStaticOne;
+			public static string $publicStaticOne;
 
-	public static string $publicStaticTwo;
+			public static string $publicStaticTwo;
 
-	public static string $publicStaticThree;
+			public static string $publicStaticThree;
 
-	/*********************
-	 * Internal properties
-	 *********************/
+			/*********************
+			 * Internal properties
+			 *********************/
 
-	protected string $protectedOne;
+			protected string $protectedOne;
 
-	private string $privateOne;
+			private string $privateOne;
 
-	protected string $protectedTwo;
+			protected string $protectedTwo;
 
-	/****************************
-	 * Internal static properties
-	 ****************************/
+			/****************************
+			 * Internal static properties
+			 ****************************/
 
-	protected static string $protectedStaticOne;
+			protected static string $protectedStaticOne;
 
-	private static string $privateStaticOne;
+			private static string $privateStaticOne;
 
-	protected static string $protectedStaticTwo;
+			protected static string $protectedStaticTwo;
 
-	/****************
-	 * Public methods
-	 ****************/
+			/****************
+			 * Public methods
+			 ****************/
 
-	public function publicOne(): void {}
+			public function publicOne(): void {}
 
-	public function publicTwo(): void {}
+			public function publicTwo(): void {}
 
-	public function publicThree(): void {}
+			public function publicThree(): void {}
 
-	/***********************
-	 * Public static methods
-	 ***********************/
+			/***********************
+			 * Public static methods
+			 ***********************/
 
-	public static function publicStaticOne(): void {}
+			public static function publicStaticOne(): void {}
 
-	public static function publicStaticTwo(): void {}
+			public static function publicStaticTwo(): void {}
 
-	public static function publicStaticThree(): void {}
+			public static function publicStaticThree(): void {}
 
-	/******************
-	 * Internal methods
-	 ******************/
+			/******************
+			 * Internal methods
+			 ******************/
 
-	protected function protectedOne(): void {}
+			protected function protectedOne(): void {}
 
-	private function privateOne(): void {}
+			private function privateOne(): void {}
 
-	protected function protectedTwo(): void {}
+			protected function protectedTwo(): void {}
 
-	/*************************
-	 * Internal static methods
-	 *************************/
+			/*************************
+			 * Internal static methods
+			 *************************/
 
-	protected static function protectedStaticOne(): void {}
+			protected static function protectedStaticOne(): void {}
 
-	private static function privateStaticOne(): void {}
+			private static function privateStaticOne(): void {}
 
-	protected static function protectedStaticTwo(): void {}
-}
-PHP,
-			<<<'PHP'
-<?php
+			protected static function protectedStaticTwo(): void {}
+		}
+		PHP,
+	<<<'PHP'
+		<?php
 
-enum Status
-{
-	case Draft;
+		enum Status
+		{
+			case Draft;
 
-	case Published;
+			case Published;
 
-	case Archived;
-}
+			case Archived;
+		}
 
-class Foo
-{
-	public const CONST_ONE = 1;
+		class Foo
+		{
+			public const CONST_ONE = 1;
 
-	public const CONST_TWO = 2;
+			public const CONST_TWO = 2;
 
-	public const CONST_THREE = 3;
+			public const CONST_THREE = 3;
 
-	public string $publicOne;
+			public string $publicOne;
 
-	public string $publicTwo;
+			public string $publicTwo;
 
-	public string $publicThree;
+			public string $publicThree;
 
-	public static string $publicStaticOne;
+			public static string $publicStaticOne;
 
-	public static string $publicStaticTwo;
+			public static string $publicStaticTwo;
 
-	public static string $publicStaticThree;
+			public static string $publicStaticThree;
 
-	protected string $protectedOne;
+			protected string $protectedOne;
 
-	private string $privateOne;
+			private string $privateOne;
 
-	protected string $protectedTwo;
+			protected string $protectedTwo;
 
-	protected static string $protectedStaticOne;
+			protected static string $protectedStaticOne;
 
-	private static string $privateStaticOne;
+			private static string $privateStaticOne;
 
-	protected static string $protectedStaticTwo;
+			protected static string $protectedStaticTwo;
 
-	public function publicOne(): void {}
+			public function publicOne(): void {}
 
-	public function publicTwo(): void {}
+			public function publicTwo(): void {}
 
-	public function publicThree(): void {}
+			public function publicThree(): void {}
 
-	public static function publicStaticOne(): void {}
+			public static function publicStaticOne(): void {}
 
-	public static function publicStaticTwo(): void {}
+			public static function publicStaticTwo(): void {}
 
-	public static function publicStaticThree(): void {}
+			public static function publicStaticThree(): void {}
 
-	protected function protectedOne(): void {}
+			protected function protectedOne(): void {}
 
-	private function privateOne(): void {}
+			private function privateOne(): void {}
 
-	protected function protectedTwo(): void {}
+			protected function protectedTwo(): void {}
 
-	protected static function protectedStaticOne(): void {}
+			protected static function protectedStaticOne(): void {}
 
-	private static function privateStaticOne(): void {}
+			private static function privateStaticOne(): void {}
 
-	protected static function protectedStaticTwo(): void {}
-}
-PHP,
-		];
+			protected static function protectedStaticTwo(): void {}
+		}
+		PHP,
+];
 
 yield 'section comments missing a space' => [
 	<<<'PHP'
-<?php
+		<?php
 
-enum Status
-{
-	/************
-	 * Enum cases
-	 ************/
+		enum Status
+		{
+			/************
+			 * Enum cases
+			 ************/
 
-	case Draft;
+			case Draft;
 
-	case Published;
+			case Published;
 
-	case Archived;
-}
+			case Archived;
+		}
 
-class Foo
-{
-	/*****************
-	 * Class constants
-	 *****************/
+		class Foo
+		{
+			/*****************
+			 * Class constants
+			 *****************/
 
-	public const CONST_ONE = 1;
+			public const CONST_ONE = 1;
 
-	public const CONST_TWO = 2;
+			public const CONST_TWO = 2;
 
-	public const CONST_THREE = 3;
+			public const CONST_THREE = 3;
 
-	/*******************
-	 * Public properties
-	 *******************/
+			/*******************
+			 * Public properties
+			 *******************/
 
-	public string $publicOne;
+			public string $publicOne;
 
-	public string $publicTwo;
+			public string $publicTwo;
 
-	public string $publicThree;
+			public string $publicThree;
 
-	/**************************
-	 * Public static properties
-	 **************************/
+			/**************************
+			 * Public static properties
+			 **************************/
 
-	public static string $publicStaticOne;
+			public static string $publicStaticOne;
 
-	public static string $publicStaticTwo;
+			public static string $publicStaticTwo;
 
-	public static string $publicStaticThree;
+			public static string $publicStaticThree;
 
-	/*********************
-	 * Internal properties
-	 *********************/
+			/*********************
+			 * Internal properties
+			 *********************/
 
-	protected string $protectedOne;
+			protected string $protectedOne;
 
-	private string $privateOne;
+			private string $privateOne;
 
-	protected string $protectedTwo;
+			protected string $protectedTwo;
 
-	/****************************
-	 * Internal static properties
-	 ****************************/
+			/****************************
+			 * Internal static properties
+			 ****************************/
 
-	protected static string $protectedStaticOne;
+			protected static string $protectedStaticOne;
 
-	private static string $privateStaticOne;
+			private static string $privateStaticOne;
 
-	protected static string $protectedStaticTwo;
+			protected static string $protectedStaticTwo;
 
-	/****************
-	 * Public methods
-	 ****************/
+			/****************
+			 * Public methods
+			 ****************/
 
-	public function publicOne(): void {}
+			public function publicOne(): void {}
 
-	public function publicTwo(): void {}
+			public function publicTwo(): void {}
 
-	public function publicThree(): void {}
+			public function publicThree(): void {}
 
-	/***********************
-	 * Public static methods
-	 ***********************/
+			/***********************
+			 * Public static methods
+			 ***********************/
 
-	public static function publicStaticOne(): void {}
+			public static function publicStaticOne(): void {}
 
-	public static function publicStaticTwo(): void {}
+			public static function publicStaticTwo(): void {}
 
-	public static function publicStaticThree(): void {}
+			public static function publicStaticThree(): void {}
 
-	/******************
-	 * Internal methods
-	 ******************/
+			/******************
+			 * Internal methods
+			 ******************/
 
-	protected function protectedOne(): void {}
+			protected function protectedOne(): void {}
 
-	private function privateOne(): void {}
+			private function privateOne(): void {}
 
-	protected function protectedTwo(): void {}
+			protected function protectedTwo(): void {}
 
-	/*************************
-	 * Internal static methods
-	 *************************/
+			/*************************
+			 * Internal static methods
+			 *************************/
 
-	protected static function protectedStaticOne(): void {}
+			protected static function protectedStaticOne(): void {}
 
-	private static function privateStaticOne(): void {}
+			private static function privateStaticOne(): void {}
 
-	protected static function protectedStaticTwo(): void {}
-}
-PHP,
-			<<<'PHP'
-<?php
+			protected static function protectedStaticTwo(): void {}
+		}
+		PHP,
+	<<<'PHP'
+		<?php
 
-enum Status
-{
-	/************
-	 *Enum cases
-	 ************/
+		enum Status
+		{
+			/************
+			 *Enum cases
+			 ************/
 
-	case Draft;
+			case Draft;
 
-	case Published;
+			case Published;
 
-	case Archived;
-}
+			case Archived;
+		}
 
-class Foo
-{
-	/*****************
-	 *Class constants
-	 *****************/
+		class Foo
+		{
+			/*****************
+			 *Class constants
+			 *****************/
 
-	public const CONST_ONE = 1;
+			public const CONST_ONE = 1;
 
-	public const CONST_TWO = 2;
+			public const CONST_TWO = 2;
 
-	public const CONST_THREE = 3;
+			public const CONST_THREE = 3;
 
-	/*******************
-	 *Public properties
-	 *******************/
+			/*******************
+			 *Public properties
+			 *******************/
 
-	public string $publicOne;
+			public string $publicOne;
 
-	public string $publicTwo;
+			public string $publicTwo;
 
-	public string $publicThree;
+			public string $publicThree;
 
-	/**************************
-	 *Public static properties
-	 **************************/
+			/**************************
+			 *Public static properties
+			 **************************/
 
-	public static string $publicStaticOne;
+			public static string $publicStaticOne;
 
-	public static string $publicStaticTwo;
+			public static string $publicStaticTwo;
 
-	public static string $publicStaticThree;
+			public static string $publicStaticThree;
 
-	/*********************
-	 *Internal properties
-	 *********************/
+			/*********************
+			 *Internal properties
+			 *********************/
 
-	protected string $protectedOne;
+			protected string $protectedOne;
 
-	private string $privateOne;
+			private string $privateOne;
 
-	protected string $protectedTwo;
+			protected string $protectedTwo;
 
-	/****************************
-	 *Internal static properties
-	 ****************************/
+			/****************************
+			 *Internal static properties
+			 ****************************/
 
-	protected static string $protectedStaticOne;
+			protected static string $protectedStaticOne;
 
-	private static string $privateStaticOne;
+			private static string $privateStaticOne;
 
-	protected static string $protectedStaticTwo;
+			protected static string $protectedStaticTwo;
 
-	/****************
-	 *Public methods
-	 ****************/
+			/****************
+			 *Public methods
+			 ****************/
 
-	public function publicOne(): void {}
+			public function publicOne(): void {}
 
-	public function publicTwo(): void {}
+			public function publicTwo(): void {}
 
-	public function publicThree(): void {}
+			public function publicThree(): void {}
 
-	/***********************
-	 *Public static methods
-	 ***********************/
+			/***********************
+			 *Public static methods
+			 ***********************/
 
-	public static function publicStaticOne(): void {}
+			public static function publicStaticOne(): void {}
 
-	public static function publicStaticTwo(): void {}
+			public static function publicStaticTwo(): void {}
 
-	public static function publicStaticThree(): void {}
+			public static function publicStaticThree(): void {}
 
-	/******************
-	 *Internal methods
-	 ******************/
+			/******************
+			 *Internal methods
+			 ******************/
 
-	protected function protectedOne(): void {}
+			protected function protectedOne(): void {}
 
-	private function privateOne(): void {}
+			private function privateOne(): void {}
 
-	protected function protectedTwo(): void {}
+			protected function protectedTwo(): void {}
 
-	/*************************
-	 *Internal static methods
-	 *************************/
+			/*************************
+			 *Internal static methods
+			 *************************/
 
-	protected static function protectedStaticOne(): void {}
+			protected static function protectedStaticOne(): void {}
 
-	private static function privateStaticOne(): void {}
+			private static function privateStaticOne(): void {}
 
-	protected static function protectedStaticTwo(): void {}
-}
-PHP,
-		];
+			protected static function protectedStaticTwo(): void {}
+		}
+		PHP,
+];
 
 		yield 'misplaced and duplicate section comments' => [
 			<<<'PHP'
-<?php
+				<?php
 
-class Foo
-{
-	/*******************
-	 * Public properties
-	 *******************/
+				class Foo
+				{
+					/*******************
+					 * Public properties
+					 *******************/
 
-	public string $publicOne;
+					public string $publicOne;
 
-	public string $publicTwo;
+					public string $publicTwo;
 
-	/****************
-	 * Public methods
-	 ****************/
+					/****************
+					 * Public methods
+					 ****************/
 
-	public function publicOne(): void {}
+					public function publicOne(): void {}
 
-	public function publicTwo(): void {}
+					public function publicTwo(): void {}
 
-	/******************
-	 * Internal methods
-	 ******************/
+					/******************
+					 * Internal methods
+					 ******************/
 
-	protected function protectedOne(): void {}
+					protected function protectedOne(): void {}
 
-	protected function protectedTwo(): void {}
-}
-PHP,
+					protected function protectedTwo(): void {}
+				}
+				PHP,
 			<<<'PHP'
-<?php
+				<?php
 
-class Foo
-{
-	/****************
-	 * Public methods
-	 ****************/
-	/*******************
-	 * Public properties
-	 *******************/
-	public string $publicOne;
+				class Foo
+				{
+					/****************
+					 * Public methods
+					 ****************/
+					/*******************
+					 * Public properties
+					 *******************/
+					public string $publicOne;
 
-	/*******************
-	 * Public properties
-	 *******************/
-	public string $publicTwo;
+					/*******************
+					 * Public properties
+					 *******************/
+					public string $publicTwo;
 
-	/******************
-	 * Internal methods
-	 ******************/
-	public function publicOne(): void {}
+					/******************
+					 * Internal methods
+					 ******************/
+					public function publicOne(): void {}
 
-	/****************
-	 * Public methods
-	 ****************/
-	public function publicTwo(): void {}
+					/****************
+					 * Public methods
+					 ****************/
+					public function publicTwo(): void {}
 
-	/******************
-	 * Internal methods
-	 ******************/
-	protected function protectedOne(): void {}
+					/******************
+					 * Internal methods
+					 ******************/
+					protected function protectedOne(): void {}
 
-	/******************
-	 * Internal methods
-	 ******************/
-	protected function protectedTwo(): void {}
-}
-PHP,
+					/******************
+					 * Internal methods
+					 ******************/
+					protected function protectedTwo(): void {}
+				}
+				PHP,
 		];
 
 		yield 'completely wrong section comments' => [
 			<<<'PHP'
-<?php
+				<?php
 
-class Foo
-{
-	/*******************
-	 * Public properties
-	 *******************/
+				class Foo
+				{
+					/*******************
+					 * Public properties
+					 *******************/
 
-	public string $foo;
+					public string $foo;
 
-	/****************
-	 * Public methods
-	 ****************/
+					/****************
+					 * Public methods
+					 ****************/
 
-	public function foo(): void {}
-}
-PHP,
+					public function foo(): void {}
+				}
+				PHP,
 			<<<'PHP'
-<?php
+				<?php
 
-class Foo
-{
-	/*************************
-	 * Internal static methods
-	 *************************/
+				class Foo
+				{
+					/*************************
+					 * Internal static methods
+					 *************************/
 
-	public string $foo;
+					public string $foo;
 
-	/****************************
-	 * Internal static properties
-	 ****************************/
+					/****************************
+					 * Internal static properties
+					 ****************************/
 
-	public function foo(): void {}
-}
-PHP,
+					public function foo(): void {}
+				}
+				PHP,
 		];
+	}
+
+	/******************
+	 * Internal methods
+	 ******************/
+
+	protected function createFixer(): AbstractFixer
+	{
+		return new SectionCommentsFixer();
 	}
 }

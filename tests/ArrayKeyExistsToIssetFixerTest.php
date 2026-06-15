@@ -11,112 +11,115 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversClass(ArrayKeyExistsToIssetFixer::class)]
 final class ArrayKeyExistsToIssetFixerTest extends AbstractFixerTestCase
 {
-	protected function createFixer(): AbstractFixer
-	{
-		return new ArrayKeyExistsToIssetFixer();
-	}
-
 	#[DataProvider('provideFixCases')]
+	/****************
+	 * Public methods
+	 ****************/
+
 	public function testFix(string $expected, ?string $input = null): void
 	{
 		$this->doTest($expected, $input);
 	}
 
+	/***********************
+	 * Public static methods
+	 ***********************/
+
 	public static function provideFixCases(): iterable
 	{
 		yield 'simple string key' => [
-				<<<'PHP'
-<?php
+			<<<'PHP'
+				<?php
 
-isset($array['foo']);
-PHP,
-				<<<'PHP'
-<?php
+				isset($array['foo']);
+				PHP,
+			<<<'PHP'
+				<?php
 
-array_key_exists('foo', $array);
-PHP,
+				array_key_exists('foo', $array);
+				PHP,
 		];
 
 		yield 'variable key' => [
-				<<<'PHP'
-<?php
+			<<<'PHP'
+				<?php
 
-isset($data[$key]);
-PHP,
-				<<<'PHP'
-<?php
+				isset($data[$key]);
+				PHP,
+			<<<'PHP'
+				<?php
 
-array_key_exists($key, $data);
-PHP,
+				array_key_exists($key, $data);
+				PHP,
 		];
 
 		yield 'inside if' => [
-				<<<'PHP'
-<?php
+			<<<'PHP'
+				<?php
 
-if (isset($data[$key])) {
-	doSomething();
-}
-PHP,
-				<<<'PHP'
-<?php
+				if (isset($data[$key])) {
+					doSomething();
+				}
+				PHP,
+			<<<'PHP'
+				<?php
 
-if (array_key_exists($key, $data)) {
-	doSomething();
-}
-PHP,
+				if (array_key_exists($key, $data)) {
+					doSomething();
+				}
+				PHP,
 		];
 
 		yield 'array access expression' => [
-				<<<'PHP'
-<?php
+			<<<'PHP'
+				<?php
 
-isset($items[$i]['name']);
-PHP,
-				<<<'PHP'
-<?php
+				isset($items[$i]['name']);
+				PHP,
+			<<<'PHP'
+				<?php
 
-array_key_exists('name', $items[$i]);
-PHP,
+				array_key_exists('name', $items[$i]);
+				PHP,
 		];
 
 		yield 'multiple occurrences' => [
-				<<<'PHP'
-<?php
+			<<<'PHP'
+				<?php
 
-isset($a['foo']);
-isset($b[$key]);
-PHP,
-				<<<'PHP'
-<?php
+				isset($a['foo']);
+				isset($b[$key]);
+				PHP,
+			<<<'PHP'
+				<?php
 
-array_key_exists('foo', $a);
-array_key_exists($key, $b);
-PHP,
+				array_key_exists('foo', $a);
+				array_key_exists($key, $b);
+				PHP,
 		];
 
 		yield 'multiline call' => [
-				<<<'PHP'
-<?php
+			<<<'PHP'
+				<?php
 
-isset($data[$key]);
-PHP,
-				<<<'PHP'
-<?php
+				isset($data[$key]);
+				PHP,
+			<<<'PHP'
+				<?php
 
-array_key_exists(
-	$key,
-	$data
-);
-PHP,
+				array_key_exists(
+					$key,
+					$data
+				);
+				PHP,
 		];
 
 		yield 'already fixed' => [
-				<<<'PHP'
-<?php
+			<<<'PHP'
+				<?php
 
-isset($data[$key]);
-PHP,
+				isset($data[$key]);
+				PHP,
 		];
 
 		yield 'function call in key expression' => [
@@ -163,5 +166,14 @@ PHP,
 			"<?php\n\nisset(getArray(foo(\$a, \$b), bar(\$c, \$d))[getKey(baz(\$e, \$f), qux(\$g, \$h))]);",
 			"<?php\n\narray_key_exists(getKey(baz(\$e, \$f), qux(\$g, \$h)), getArray(foo(\$a, \$b), bar(\$c, \$d)));",
 		];
+	}
+
+	/******************
+	 * Internal methods
+	 ******************/
+
+	protected function createFixer(): AbstractFixer
+	{
+		return new ArrayKeyExistsToIssetFixer();
 	}
 }

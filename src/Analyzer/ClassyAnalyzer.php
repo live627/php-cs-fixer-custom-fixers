@@ -30,6 +30,10 @@ use PhpCsFixer\Tokenizer\Tokens;
  */
 final class ClassyAnalyzer
 {
+	/*****************
+	 * Class constants
+	 *****************/
+
 	private const RESERVED_TYPES = [
 		'array' => true,
 		'bool' => true,
@@ -52,6 +56,10 @@ final class ClassyAnalyzer
 		'void' => true,
 	];
 
+	/****************
+	 * Public methods
+	 ****************/
+
 	public function isClassyInvocation(Tokens $tokens, int $index): bool
 	{
 		$token = $tokens[$index];
@@ -67,13 +75,13 @@ final class ClassyAnalyzer
 		}
 
 		$next = $tokens->getNextMeaningfulToken($index);
-		$nextToken = $tokens[$next];
+		$next_token = $tokens[$next];
 
-		if ($nextToken->isGivenKind(\T_NS_SEPARATOR)) {
+		if ($next_token->isGivenKind(\T_NS_SEPARATOR)) {
 			return false;
 		}
 
-		if ($nextToken->isGivenKind([\T_DOUBLE_COLON, \T_ELLIPSIS, CT::T_TYPE_ALTERNATION, CT::T_TYPE_INTERSECTION, \T_VARIABLE])) {
+		if ($next_token->isGivenKind([\T_DOUBLE_COLON, \T_ELLIPSIS, CT::T_TYPE_ALTERNATION, CT::T_TYPE_INTERSECTION, \T_VARIABLE])) {
 			return true;
 		}
 
@@ -83,13 +91,13 @@ final class ClassyAnalyzer
 			$prev = $tokens->getPrevMeaningfulToken($prev);
 		}
 
-		$prevToken = $tokens[$prev];
+		$prev_token = $tokens[$prev];
 
-		if ($prevToken->isGivenKind([\T_EXTENDS, \T_INSTANCEOF, \T_INSTEADOF, \T_IMPLEMENTS, \T_NEW, CT::T_NULLABLE_TYPE, CT::T_TYPE_ALTERNATION, CT::T_TYPE_INTERSECTION, CT::T_TYPE_COLON, CT::T_USE_TRAIT])) {
+		if ($prev_token->isGivenKind([\T_EXTENDS, \T_INSTANCEOF, \T_INSTEADOF, \T_IMPLEMENTS, \T_NEW, CT::T_NULLABLE_TYPE, CT::T_TYPE_ALTERNATION, CT::T_TYPE_INTERSECTION, CT::T_TYPE_COLON, CT::T_USE_TRAIT])) {
 			return true;
 		}
 
-		if (\PHP_VERSION_ID >= 8_00_00 && $nextToken->equals(')') && $prevToken->equals('(') && $tokens[$tokens->getPrevMeaningfulToken($prev)]->isGivenKind(\T_CATCH)) {
+		if (\PHP_VERSION_ID >= 8_00_00 && $next_token->equals(')') && $prev_token->equals('(') && $tokens[$tokens->getPrevMeaningfulToken($prev)]->isGivenKind(\T_CATCH)) {
 			return true;
 		}
 
@@ -100,24 +108,24 @@ final class ClassyAnalyzer
 		// `Foo & $bar` could be:
 		//   - function reference parameter: function baz(Foo & $bar) {}
 		//   - bit operator: $x = Foo & $bar;
-		if ($nextToken->equals('&') && $tokens[$tokens->getNextMeaningfulToken($next)]->isGivenKind(\T_VARIABLE)) {
-			$checkIndex = $tokens->getPrevTokenOfKind($prev + 1, [';', '{', '}', [\T_FUNCTION], [\T_OPEN_TAG], [\T_OPEN_TAG_WITH_ECHO]]);
+		if ($next_token->equals('&') && $tokens[$tokens->getNextMeaningfulToken($next)]->isGivenKind(\T_VARIABLE)) {
+			$check_index = $tokens->getPrevTokenOfKind($prev + 1, [';', '{', '}', [\T_FUNCTION], [\T_OPEN_TAG], [\T_OPEN_TAG_WITH_ECHO]]);
 
-			return $tokens[$checkIndex]->isGivenKind(\T_FUNCTION);
+			return $tokens[$check_index]->isGivenKind(\T_FUNCTION);
 		}
 
-		if (!$prevToken->equals(',')) {
+		if (!$prev_token->equals(',')) {
 			return false;
 		}
 
 		do {
 			$prev = $tokens->getPrevMeaningfulToken($prev);
-			$prevToken = $tokens[$prev];
+			$prev_token = $tokens[$prev];
 		} while (
-			$prevToken->equals(',')
-			|| $prevToken->isGivenKind(T_NS_SEPARATOR)
-			|| $prevToken->isGivenKind(T_STRING)
-			|| $prevToken->isGivenKind(CT::T_NAMESPACE_OPERATOR)
+			$prev_token->equals(',')
+			|| $prev_token->isGivenKind(T_NS_SEPARATOR)
+			|| $prev_token->isGivenKind(T_STRING)
+			|| $prev_token->isGivenKind(CT::T_NAMESPACE_OPERATOR)
 		);
 
 		return $tokens[$prev]->isGivenKind([\T_IMPLEMENTS, CT::T_USE_TRAIT]);

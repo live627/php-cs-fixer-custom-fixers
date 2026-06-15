@@ -1,4 +1,4 @@
-# Rule `snake_case_identifiers`
+# Rule `Live627/snake_case_identifiers`
 
 Converts camelCase identifiers to snake_case.
 
@@ -95,3 +95,10 @@ array (
 +$member_name = 1;
  $txtBirthday = 1;
 ```
+
+## References
+
+- Class: [`Live627\PhpCsFixer\CustomFixers\SnakeCaseIdentifiersFixer`](../src\SnakeCaseIdentifiersFixer.php)
+  - `src\SnakeCaseIdentifiersFixer.php`
+- Test: [`SnakeCaseIdentifiersFixerTest`](../tests/SnakeCaseIdentifiersFixerTest.php)
+  - `tests/SnakeCaseIdentifiersFixerTest.php`
