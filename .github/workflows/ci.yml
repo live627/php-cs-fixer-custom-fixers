@@ -32,7 +32,7 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install -vvv --no-progress
+        run: composer install --no-progress
 
       - name: PHP-CS-Fixer (dry-run)
         run: vendor/bin/php-cs-fixer fix --dry-run --allow-risky=yes --format=checkstyle | cs2pr
@@ -40,9 +40,10 @@ jobs:
       - uses: mheap/phpunit-matcher-action@v1
 
       - name: Enable Xdebug
-        run: |
-          phpenv config-rm xdebug.ini || true
-          echo "xdebug.mode=coverage" >> "$(php --ini | grep 'Loaded Configuration' | awk '{print $4}')"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          coverage: xdebug
 
       - name: PHPUnit
         id: phpunit
@@ -55,9 +56,3 @@ jobs:
       - name: Show TeamCity log
         if: steps.phpunit.outcome == 'failure'
         run: cat teamcity.log
-
-      - name: Install Ocular
-        run: composer require --dev uma/ocular:^2
-
-      - name: Upload coverage
-        run: php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover.xml
