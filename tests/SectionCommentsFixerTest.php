@@ -9,15 +9,13 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 final class SectionCommentsFixerTest extends AbstractFixerTestCase
 {
-	#[DataProvider('provideFixCases')]
 	/****************
 	 * Public methods
 	 ****************/
 
-	public function testFix(
-		string $expected,
-		?string $input = null,
-	): void {
+	#[DataProvider('provideFixCases')]
+	public function testFix(string $expected, ?string $input = null): void
+	{
 		$this->doTest($expected, $input);
 	}
 
@@ -975,6 +973,58 @@ yield 'does not add blank line before first section comment' => [
 			 * Public properties
 			 *******************/
 			public string $foo;
+		}
+		PHP,
+];
+
+yield 'attributes remain attached to method' => [
+	<<<'PHP'
+		<?php
+
+		class Foo
+		{
+			/****************
+			 * Public methods
+			 ****************/
+
+			#[DataProvider('provideFixCases')]
+			public function testFix(): void {}
+		}
+		PHP,
+	<<<'PHP'
+		<?php
+
+		class Foo
+		{
+			#[DataProvider('provideFixCases')]
+			public function testFix(): void {}
+		}
+		PHP,
+];
+
+yield 'multiple attributes remain attached to method' => [
+	<<<'PHP'
+		<?php
+
+		class Foo
+		{
+			/****************
+			 * Public methods
+			 ****************/
+
+			#[Test]
+			#[DataProvider('provideFixCases')]
+			public function testFix(): void {}
+		}
+		PHP,
+	<<<'PHP'
+		<?php
+
+		class Foo
+		{
+			#[Test]
+			#[DataProvider('provideFixCases')]
+			public function testFix(): void {}
 		}
 		PHP,
 ];

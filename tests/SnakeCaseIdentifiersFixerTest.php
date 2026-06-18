@@ -9,11 +9,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 final class SnakeCaseIdentifiersFixerTest extends AbstractFixerWithAliasedOptionsTestCase
 {
-	#[DataProvider('provideFixCases')]
 	/****************
 	 * Public methods
 	 ****************/
 
+	#[DataProvider('provideFixCases')]
 	public function testFix(string $expected, ?string $input = null, ?array $configuration = null): void
 	{
 		if ($configuration !== null) {

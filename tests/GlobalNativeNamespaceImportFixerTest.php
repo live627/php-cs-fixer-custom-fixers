@@ -9,11 +9,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 final class GlobalNativeNamespaceImportFixerTest extends AbstractFixerTestCase
 {
-	#[DataProvider('provideFixCases')]
 	/****************
 	 * Public methods
 	 ****************/
 
+	#[DataProvider('provideFixCases')]
 	public function testFix(string $expected, ?string $input = null): void
 	{
 		$this->doTest($expected, $input);

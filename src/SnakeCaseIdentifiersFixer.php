@@ -78,6 +78,7 @@ use PhpCsFixer\Tokenizer\Tokens;
 final class SnakeCaseIdentifiersFixer extends AbstractFixer implements ConfigurableFixerInterface
 {
 	use ConfigurableFixerTrait;
+
 	/*****************
 	 * Class constants
 	 *****************/
