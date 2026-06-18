@@ -5,10 +5,8 @@ declare(strict_types=1);
 use Live627\PhpCsFixer\CustomFixers\ArrayKeyExistsToIssetFixer;
 use PhpCsFixer\AbstractFixer;
 use PhpCsFixer\Tests\Test\AbstractFixerTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-#[CoversClass(ArrayKeyExistsToIssetFixer::class)]
 final class ArrayKeyExistsToIssetFixerTest extends AbstractFixerTestCase
 {
 	#[DataProvider('provideFixCases')]

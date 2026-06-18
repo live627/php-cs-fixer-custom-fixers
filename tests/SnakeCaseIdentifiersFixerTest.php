@@ -7,7 +7,6 @@ use PhpCsFixer\AbstractFixer;
 use PhpCsFixer\Tests\Test\AbstractFixerWithAliasedOptionsTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-#[CoversClass(SnakeCaseIdentifiersFixer::class)]
 final class SnakeCaseIdentifiersFixerTest extends AbstractFixerWithAliasedOptionsTestCase
 {
 	#[DataProvider('provideFixCases')]

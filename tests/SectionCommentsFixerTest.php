@@ -5,10 +5,8 @@ declare(strict_types=1);
 use Live627\PhpCsFixer\CustomFixers\SectionCommentsFixer;
 use PhpCsFixer\AbstractFixer;
 use PhpCsFixer\Tests\Test\AbstractFixerTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-#[CoversClass(SectionCommentsFixer::class)]
 final class SectionCommentsFixerTest extends AbstractFixerTestCase
 {
 	#[DataProvider('provideFixCases')]
@@ -902,6 +900,84 @@ yield 'section comments missing a space' => [
 				}
 				PHP,
 		];
+
+yield 'normalizes whitespace around existing section comments' => [
+	<<<'PHP'
+		<?php
+
+		class Foo
+		{
+			/*******************
+			 * Public properties
+			 *******************/
+
+			public string $foo;
+
+			/****************
+			 * Public methods
+			 ****************/
+
+			public function bar(): void {}
+		}
+		PHP,
+	<<<'PHP'
+		<?php
+
+		class Foo
+		{
+
+
+
+
+			/*******************
+			 * Public properties
+			 *******************/
+
+
+
+
+			public string $foo;
+
+
+
+
+			/****************
+			 * Public methods
+			 ****************/
+
+
+
+
+			public function bar(): void {}
+		}
+		PHP,
+];
+
+yield 'does not add blank line before first section comment' => [
+	<<<'PHP'
+		<?php
+
+		class Foo
+		{
+			/*******************
+			 * Public properties
+			 *******************/
+
+			public string $foo;
+		}
+		PHP,
+	<<<'PHP'
+		<?php
+
+		class Foo
+		{
+			/*******************
+			 * Public properties
+			 *******************/
+			public string $foo;
+		}
+		PHP,
+];
 	}
 
 	/******************

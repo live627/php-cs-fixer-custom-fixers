@@ -5,10 +5,8 @@ declare(strict_types=1);
 use Live627\PhpCsFixer\CustomFixers\GlobalNativeNamespaceImportFixer;
 use PhpCsFixer\AbstractFixer;
 use PhpCsFixer\Tests\Test\AbstractFixerTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-#[CoversClass(GlobalNativeNamespaceImportFixer::class)]
 final class GlobalNativeNamespaceImportFixerTest extends AbstractFixerTestCase
 {
 	#[DataProvider('provideFixCases')]
