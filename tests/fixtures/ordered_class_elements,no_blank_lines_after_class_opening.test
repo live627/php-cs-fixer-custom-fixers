@@ -1,0 +1,189 @@
+--TEST--
+Integration of fixers: ordered_class_elements,SMF/section_comments.
+--RULESET--
+{
+	"ordered_class_elements": {
+		"order": [
+			"use_trait",
+			"case",
+			"constant_public",
+			"constant_protected",
+			"constant_private",
+			"property_public",
+			"property_public_static",
+			"property_protected",
+			"property_private",
+			"property_protected_static",
+			"property_private_static",
+			"method_public",
+			"method_public_static",
+			"method_protected",
+			"method_private",
+			"method_protected_static",
+			"method_private_static"
+		],
+		"sort_algorithm": "none"
+	},
+	"class_attributes_separation": true,
+	"SMF/section_comments": true
+}
+--CONFIG--
+{
+	"customFixers": ["Live627\\PhpCsFixer\\CustomFixers\\SectionCommentsFixer"],
+	"indent": "\t"
+}
+--EXPECT--
+<?php
+
+class Foo
+{
+	/*****************
+	 * Class constants
+	 *****************/
+
+	public const CONST_ONE = 1;
+
+	public const CONST_TWO = 2;
+
+	public const CONST_THREE = 3;
+
+	/*******************
+	 * Public properties
+	 *******************/
+
+	public string $publicOne;
+
+	public string $publicTwo;
+
+	public string $publicThree;
+
+	/**************************
+	 * Public static properties
+	 **************************/
+
+	public static string $publicStaticOne;
+
+	public static string $publicStaticTwo;
+
+	public static string $publicStaticThree;
+
+	/*********************
+	 * Internal properties
+	 *********************/
+
+	protected string $protectedOne;
+
+	protected string $protectedTwo;
+
+	private string $privateOne;
+
+	/****************************
+	 * Internal static properties
+	 ****************************/
+
+	protected static string $protectedStaticOne;
+
+	protected static string $protectedStaticTwo;
+
+	private static string $privateStaticOne;
+
+	/****************
+	 * Public methods
+	 ****************/
+
+	public function publicOne(): void {}
+
+	public function publicTwo(): void {}
+
+	public function publicThree(): void {}
+
+	/***********************
+	 * Public static methods
+	 ***********************/
+
+	public static function publicStaticOne(): void {}
+
+	public static function publicStaticTwo(): void {}
+
+	public static function publicStaticThree(): void {}
+
+	/******************
+	 * Internal methods
+	 ******************/
+
+	protected function protectedOne(): void {}
+
+	protected function protectedTwo(): void {}
+
+	private function privateOne(): void {}
+
+	/*************************
+	 * Internal static methods
+	 *************************/
+
+	protected static function protectedStaticOne(): void {}
+
+	protected static function protectedStaticTwo(): void {}
+
+	private static function privateStaticOne(): void {}
+}
+
+--INPUT--
+<?php
+
+class Foo
+{
+	protected static string $protectedStaticOne;
+
+	protected static string $protectedStaticTwo;
+
+	public function publicOne(): void {}
+
+	public function publicTwo(): void {}
+
+	public function publicThree(): void {}
+
+	public const CONST_ONE = 1;
+
+	public const CONST_TWO = 2;
+
+	public const CONST_THREE = 3;
+
+	private function privateOne(): void {}
+
+	public static string $publicStaticOne;
+
+	public static string $publicStaticTwo;
+
+	public static string $publicStaticThree;
+
+	protected function protectedOne(): void {}
+
+	protected function protectedTwo(): void {}
+
+	public string $publicOne;
+
+	public string $publicTwo;
+
+	public string $publicThree;
+
+	protected static function protectedStaticOne(): void {}
+
+	protected static function protectedStaticTwo(): void {}
+
+	private static function privateStaticOne(): void {}
+
+	private static string $privateStaticOne;
+
+	public static function publicStaticOne(): void {}
+
+	public static function publicStaticTwo(): void {}
+
+	public static function publicStaticThree(): void {}
+
+	protected string $protectedOne;
+
+	protected string $protectedTwo;
+
+	private string $privateOne;
+}
