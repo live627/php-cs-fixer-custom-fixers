@@ -304,22 +304,28 @@ final class SectionCommentsFixer extends AbstractFixer
 
 					// Walk back to include any preceding 'final' or 'readonly'
 					// keywords, as well as any comments or whitespace.
-					while (
-						isset($tokens[$insert_at - 1])
-						&& (
-							$tokens[$insert_at - 1]->isGivenKind([T_FINAL, T_READONLY, T_ABSTRACT])
-							|| $tokens[$insert_at - 1]->isWhitespace()
-							|| $tokens[$insert_at - 1]->isComment()
-						)
-					) {
-						$insert_at--;
+					while (isset($tokens[$insert_at - 1])) {
+						$prev = $tokens[$insert_at - 1];
+						$id = $prev->getId();
+
+						if (
+							$id !== T_FINAL
+							&& $id !== T_READONLY
+							&& $id !== T_ABSTRACT
+							&& !$prev->isWhitespace()
+							&& !$prev->isComment()
+						) {
+							break;
+						}
+
+						--$insert_at;
 					}
 
 					// Now we need to take one step forward again.
 					$insert_at++;
 
 					// Rewind to the first attribute in an attribute group.
-					while ($tokens[$prev_index = $tokens->getPrevMeaningfulToken($insert_at)]->isGivenKind(CT::T_ATTRIBUTE_CLOSE)) {
+					while ($tokens[$prev_index = $tokens->getPrevMeaningfulToken($insert_at)]->getId() === CT::T_ATTRIBUTE_CLOSE) {
 						$insert_at = $tokens->findBlockStart(Tokens::BLOCK_TYPE_ATTRIBUTE, $prev_index);
 
 						while (
