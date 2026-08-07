@@ -17,8 +17,7 @@ Names to exclude.
 **Default:**
 
 ```php
-array (
-)
+[] // empty array
 ```
 
 ### `exclude_patterns`
@@ -28,8 +27,7 @@ Patterns to exclude.
 **Default:**
 
 ```php
-array (
-)
+[] // empty array
 ```
 
 ## Examples
@@ -53,12 +51,11 @@ array (
 **Configuration**
 
 ```php
-array (
-  'exclude' => 
-  array (
-    0 => '$memberName',
-  ),
-)
+[
+    'exclude' => [
+        '$memberName',
+    ],
+]
 ```
 
 ```diff
@@ -77,12 +74,11 @@ array (
 **Configuration**
 
 ```php
-array (
-  'exclude_patterns' => 
-  array (
-    0 => '/^\\$txt[A-Z]/',
-  ),
-)
+[
+    'exclude_patterns' => [
+        '/^\\$txt[A-Z]/',
+    ],
+]
 ```
 
 ```diff

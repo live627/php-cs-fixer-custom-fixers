@@ -6,6 +6,42 @@ use PhpCsFixer\Fixer\ConfigurableFixerInterface;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
+/**
+ * Exports a PHP value using short array syntax.
+ */
+function shortVarExport(mixed $value, int $indent = 0): string
+{
+	if (!is_array($value)) {
+		return var_export($value, true);
+	}
+
+	if ($value === []) {
+		return '[] // empty array';
+	}
+
+	$padding = str_repeat('    ', $indent);
+	$child_padding = str_repeat('    ', $indent + 1);
+	$is_list = array_is_list($value);
+
+	$lines = ['['];
+
+	foreach ($value as $key => $item) {
+		$line = $child_padding;
+
+		if (!$is_list) {
+			$line .= var_export($key, true) . ' => ';
+		}
+
+		$line .= shortVarExport($item, $indent + 1) . ',';
+
+		$lines[] = $line;
+	}
+
+	$lines[] = $padding . ']';
+
+	return implode("\n", $lines);
+}
+
 require __DIR__ . '/vendor/autoload.php';
 
 $src_dir = __DIR__ . '/src';
@@ -98,7 +134,7 @@ foreach ($iterator as $file) {
 			$markdown[] = '**Default:**';
 			$markdown[] = '';
 			$markdown[] = '```php';
-			$markdown[] = var_export($option->getDefault(), true);
+			$markdown[] = shortVarExport($option->getDefault());
 			$markdown[] = '```';
 			$markdown[] = '';
 		}
@@ -143,7 +179,7 @@ foreach ($iterator as $file) {
 			$markdown[] = '**Configuration**';
 			$markdown[] = '';
 			$markdown[] = '```php';
-			$markdown[] = var_export($sample->getConfiguration(), true);
+			$markdown[] = shortVarExport($sample->getConfiguration());
 			$markdown[] = '```';
 			$markdown[] = '';
 		}
