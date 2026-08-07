@@ -209,7 +209,7 @@ final class SectionCommentsFixer extends AbstractFixer
 	protected function applyFix(\SplFileInfo $file, Tokens $tokens): void
 	{
 		// Does this file contain an enumeration?
-		$is_enum = $tokens->isAnyTokenKindsFound([T_ENUM]);
+		$is_enum = $tokens->isTokenKindFound(T_ENUM);
 
 		// Now insert fresh copies of the section comments.
 		$elements = [];
