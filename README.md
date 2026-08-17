@@ -3,10 +3,28 @@ A set of custom fixers for PHP-CS-Fixer
 
 ## Installation
 
-Install via Composer:
+Since this package is not yet on Packagist, you need to add the repository to your `composer.json`:
+
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/live627/php-cs-fixer-custom-fixers.git"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "live627/php-cs-fixer-custom-fixers": "dev-main"
+    }
+}
+```
+
+Then install via Composer:
 
 ```bash
-composer require --dev live627/php-cs-fixer-custom-fixers
+composer require --dev live627/php-cs-fixer-custom-fixers:dev-main
 ```
 
 ### Configuration
