@@ -2,6 +2,10 @@
 
 Converts camelCase identifiers to snake_case.
 
+## Priority
+
+This fixer has priority `0`. Higher priorities are executed first.
+
 ## Warning
 
 This rule is risky.

@@ -2,6 +2,22 @@
 
 Fully qualifies references to PHP internal classes, interfaces, and traits and removes redundant import statements.
 
+## Priority
+
+This fixer has priority `0`. Higher priorities are executed first.
+
+**Must run before:**
+
+- `NoUnusedImportsFixer` — priority `-10`
+- `OrderedImportsFixer` — priority `-30`
+- `StatementIndentationFixer` — priority `-3`
+
+**Must run after:**
+
+- `NativeConstantInvocationFixer` — priority `1`
+- `NativeFunctionInvocationFixer` — priority `1`
+- `StringableForToStringFixer` — priority `37`
+
 ## Examples
 
 ### Example #1

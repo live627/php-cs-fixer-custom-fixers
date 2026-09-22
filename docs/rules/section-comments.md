@@ -2,6 +2,20 @@
 
 Inserts sectioning comments. This is meant to be used in combination with the `ordered_class_elements` rule.
 
+## Priority
+
+This fixer has priority `54`. Higher priorities are executed first.
+
+**Must run before:**
+
+- `IndentationTypeFixer` — priority `50`
+- `NoExtraBlankLinesFixer` — priority `-20`
+
+**Must run after:**
+
+- `ClassAttributesSeparationFixer` — priority `55`
+- `OrderedClassElementsFixer` — priority `65`
+
 ## Examples
 
 ### Example #1

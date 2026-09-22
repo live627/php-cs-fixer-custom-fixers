@@ -2,6 +2,10 @@
 
 Replaces array_key_exists() with isset().
 
+## Priority
+
+This fixer has priority `0`. Higher priorities are executed first.
+
 ## Warning
 
 This rule is risky.

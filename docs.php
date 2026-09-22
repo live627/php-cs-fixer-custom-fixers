@@ -104,6 +104,38 @@ foreach ($iterator as $file) {
 	$markdown[] = $definition->getSummary();
 	$markdown[] = '';
 
+	$markdown[] = '## Priority';
+	$markdown[] = '';
+	$markdown[] = 'This fixer has priority `' . $fixer->getPriority() . '`. Higher priorities are executed first.';
+	$markdown[] = '';
+
+	$dependencies = getPriorityDependencies(
+		(new ReflectionClass($fixer))->getMethod('getPriority'),
+	);
+
+	foreach (['before' => 'Must run before', 'after' => 'Must run after'] as $type => $heading) {
+		$entries = [];
+
+		foreach ($dependencies[$type] as $dependency) {
+			$fixer_class = findFixerClass(
+				$dependency,
+				__DIR__ . '/vendor/friendsofphp/php-cs-fixer/src/Fixer',
+			);
+			$priority = (new $fixer_class())->getPriority();
+
+			$entries[] = '- `' . $dependency . '` — priority `' . $priority . '`';
+		}
+
+		if ($entries === []) {
+			continue;
+		}
+
+		$markdown[] = '**' . $heading . ':**';
+		$markdown[] = '';
+		$markdown = [...$markdown, ...$entries];
+		$markdown[] = '';
+	}
+
 	if ($fixer->isRisky()) {
 		$markdown[] = '## Warning';
 		$markdown[] = '';
@@ -260,3 +292,80 @@ $readme = preg_replace(
 );
 
 file_put_contents($readme_file, $readme);
+
+/**
+ * Extracts fixer names from a priority docblock.
+ *
+ * @return array{before: list<string>, after: list<string>}
+ */
+function getPriorityDependencies(ReflectionMethod $method): array
+{
+	$result = [
+		'before' => [],
+		'after' => [],
+	];
+
+	$doc_comment = $method->getDocComment();
+
+	if ($doc_comment === false) {
+		return $result;
+	}
+
+	foreach (explode("\n", $doc_comment) as $line) {
+		$line = trim($line, " \t*");
+
+		if (str_starts_with($line, 'Must run before ')) {
+			$result['before'] = array_map(
+				trim(...),
+				explode(',', rtrim(substr($line, 16), '.')),
+			);
+		} elseif (str_starts_with($line, 'Must run after ')) {
+			$result['after'] = array_map(
+				trim(...),
+				explode(',', rtrim(substr($line, 15), '.')),
+			);
+		}
+	}
+
+	return $result;
+}
+
+/**
+ * Finds a PHP-CS-Fixer class by fixer filename.
+ *
+ * @return class-string|null
+ */
+function findFixerClass(string $fixer_name, string $directory): ?string
+{
+	if (!str_ends_with($fixer_name, '.php')) {
+		$fixer_name .= '.php';
+	}
+
+	$directory = rtrim($directory, DIRECTORY_SEPARATOR);
+
+	$iterator = new RecursiveIteratorIterator(
+		new RecursiveDirectoryIterator(
+			$directory,
+			FilesystemIterator::SKIP_DOTS,
+		),
+	);
+
+	foreach ($iterator as $file) {
+		if (!$file->isFile() || $file->getFilename() !== $fixer_name) {
+			continue;
+		}
+
+		$relative = substr(
+			$file->getPathname(),
+			strlen($directory) + 1,
+		);
+
+		return 'PhpCsFixer\\Fixer\\' . str_replace(
+			[DIRECTORY_SEPARATOR, '.php'],
+			['\\', ''],
+			$relative,
+		);
+	}
+
+	return null;
+}
