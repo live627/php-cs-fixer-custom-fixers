@@ -96,6 +96,56 @@ Patterns to exclude.
  $txtBirthday = 1;
 ```
 
+## Test Cases
+
+These examples are taken from the fixer's PHPUnit test cases.
+
+### phpdoc rename
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ <?php
+ /**
+- * @param string $memberName
++ * @param string $member_name
+  */
+-function test($memberName) {}
++function test($member_name) {}
+```
+
+### multiple variables
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+-<?php $memberName = $userId + $displayName;
++<?php $member_name = $user_id + $display_name;
+```
+
+### phpdoc and variables
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ <?php
+ 
+ /**
+- * @param string $memberName
++ * @param string $member_name
+  */
+-function test($memberName)
++function test($member_name)
+ {
+-	$currentUser = $memberName;
++	$current_user = $member_name;
+ }
+```
+
+
 ## References
 
 - Class: [`Live627\PhpCsFixer\CustomFixers\SnakeCaseIdentifiersFixer`](../src\SnakeCaseIdentifiersFixer.php)

@@ -104,6 +104,479 @@ This fixer has priority `54`. Higher priorities are executed first.
  	 *
 ```
 
+## Test Cases
+
+These examples are taken from the fixer's PHPUnit test cases.
+
+### misplaced and duplicate section comments
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ 
+ class Foo
+ {
+-	/****************
+-	 * Public methods
+-	 ****************/
+ 	/*******************
+ 	 * Public properties
+ 	 *******************/
++
+ 	public string $publicOne;
+ 
+-	/*******************
+-	 * Public properties
+-	 *******************/
+ 	public string $publicTwo;
+ 
+-	/******************
+-	 * Internal methods
+-	 ******************/
+-	public function publicOne(): void {}
+-
+ 	/****************
+ 	 * Public methods
+ 	 ****************/
++
++	public function publicOne(): void {}
++
+ 	public function publicTwo(): void {}
+ 
+ 	/******************
+ 	 * Internal methods
+ 	 ******************/
++
+ 	protected function protectedOne(): void {}
+ 
+-	/******************
+-	 * Internal methods
+-	 ******************/
+ 	protected function protectedTwo(): void {}
+ }
+```
+
+### completely wrong section comments
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ 
+ class Foo
+ {
+-	/*************************
+-	 * Internal static methods
+-	 *************************/
++	/*******************
++	 * Public properties
++	 *******************/
+ 
+ 	public string $foo;
+ 
+-	/****************************
+-	 * Internal static properties
+-	 ****************************/
++	/****************
++	 * Public methods
++	 ****************/
+ 
+ 	public function foo(): void {}
+ }
+```
+
+### normalizes whitespace around existing section comments
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ 
+ class Foo
+ {
+-
+-
+-
+-
+ 	/*******************
+ 	 * Public properties
+ 	 *******************/
+ 
+-
+-
+-
+ 	public string $foo;
+ 
+-
+-
+-
+ 	/****************
+ 	 * Public methods
+ 	 ****************/
+-
+-
+-
+ 
+ 	public function bar(): void {}
+ }
+```
+
+### does not add blank line before first section comment
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ 	/*******************
+ 	 * Public properties
+ 	 *******************/
++
+ 	public string $foo;
+ }
+```
+
+### attributes remain attached to method
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ 
+ class Foo
+ {
++	/****************
++	 * Public methods
++	 ****************/
++
+ 	#[DataProvider('provideFixCases')]
+ 	public function testFix(): void {}
+ }
+```
+
+
+## Advanced Examples
+
+These examples demonstrate how this fixer interacts with other fixers in an integration test.
+
+### Integration example # 1
+
+**Ruleset:**
+
+```php
+[
+    'ordered_class_elements' => [
+        'order' => [
+            'use_trait',
+            'case',
+            'constant_public',
+            'constant_protected',
+            'constant_private',
+            'property_public',
+            'property_public_static',
+            'property_protected',
+            'property_private',
+            'property_protected_static',
+            'property_private_static',
+            'method_public',
+            'method_public_static',
+            'method_protected',
+            'method_private',
+            'method_protected_static',
+            'method_private_static',
+        ],
+        'sort_algorithm' => 'none',
+    ],
+    'class_attributes_separation' => true,
+    'SMF/section_comments' => true,
+]
+```
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ 
+ class Foo
+ {
+-	protected static string $protectedStaticOne;
++	/*****************
++	 * Class constants
++	 *****************/
+ 
+-	protected static string $protectedStaticTwo;
++	public const CONST_ONE = 1;
+ 
+-	public function publicOne(): void {}
++	public const CONST_TWO = 2;
+ 
+-	public function publicTwo(): void {}
++	public const CONST_THREE = 3;
+ 
+-	public function publicThree(): void {}
++	/*******************
++	 * Public properties
++	 *******************/
+ 
+-	public const CONST_ONE = 1;
++	public string $publicOne;
+ 
+-	public const CONST_TWO = 2;
++	public string $publicTwo;
+ 
+-	public const CONST_THREE = 3;
++	public string $publicThree;
+ 
+-	private function privateOne(): void {}
++	/**************************
++	 * Public static properties
++	 **************************/
+ 
+ 	public static string $publicStaticOne;
+ 
+@@ @@
+ 
+ 	public static string $publicStaticThree;
+ 
+-	protected function protectedOne(): void {}
++	/*********************
++	 * Internal properties
++	 *********************/
+ 
+-	protected function protectedTwo(): void {}
++	protected string $protectedOne;
+ 
+-	public string $publicOne;
++	protected string $protectedTwo;
+ 
+-	public string $publicTwo;
++	private string $privateOne;
+ 
+-	public string $publicThree;
++	/****************************
++	 * Internal static properties
++	 ****************************/
+ 
+-	protected static function protectedStaticOne(): void {}
++	protected static string $protectedStaticOne;
+ 
+-	protected static function protectedStaticTwo(): void {}
++	protected static string $protectedStaticTwo;
+ 
+-	private static function privateStaticOne(): void {}
++	private static string $privateStaticOne;
+ 
+-	private static string $privateStaticOne;
++	/****************
++	 * Public methods
++	 ****************/
+ 
++	public function publicOne(): void {}
++
++	public function publicTwo(): void {}
++
++	public function publicThree(): void {}
++
++	/***********************
++	 * Public static methods
++	 ***********************/
++
+ 	public static function publicStaticOne(): void {}
+ 
+ 	public static function publicStaticTwo(): void {}
+@@ @@
+ 
+ 	public static function publicStaticThree(): void {}
+ 
+-	protected string $protectedOne;
++	/******************
++	 * Internal methods
++	 ******************/
+ 
+-	protected string $protectedTwo;
++	protected function protectedOne(): void {}
+ 
+-	private string $privateOne;
++	protected function protectedTwo(): void {}
++
++	private function privateOne(): void {}
++
++	/*************************
++	 * Internal static methods
++	 *************************/
++
++	protected static function protectedStaticOne(): void {}
++
++	protected static function protectedStaticTwo(): void {}
++
++	private static function privateStaticOne(): void {}
+ }
+\ No newline at end of file
+```
+
+
+### Integration example # 2
+
+**Ruleset:**
+
+```php
+[
+    'ordered_class_elements' => [
+        'order' => [
+            'use_trait',
+            'case',
+            'constant_public',
+            'constant_protected',
+            'constant_private',
+            'property_public',
+            'property_public_static',
+            'property_protected',
+            'property_private',
+            'property_protected_static',
+            'property_private_static',
+            'method_public',
+            'method_public_static',
+            'method_protected',
+            'method_private',
+            'method_protected_static',
+            'method_private_static',
+        ],
+        'sort_algorithm' => 'none',
+    ],
+    'modifier_keywords' => true,
+    'no_extra_blank_lines' => true,
+    'indentation_type' => true,
+    'class_attributes_separation' => true,
+    'SMF/section_comments' => true,
+]
+```
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ 
+ class Foo
+ {
+-    protected static string $protectedStaticOne;
++    /*****************
++     * Class constants
++     *****************/
+ 
+-    protected static string $protectedStaticTwo;
++    public const CONST_ONE = 1;
+ 
+-    public function publicOne(): void {}
++    public const CONST_TWO = 2;
+ 
+-    function publicTwo(): void {}
++    public const CONST_THREE = 3;
+ 
+-    function publicThree(): void {}
++    /*******************
++     * Public properties
++     *******************/
+ 
++    public string $publicOne;
+ 
+-    public const CONST_ONE = 1;
++    public string $publicTwo;
+ 
+-    const CONST_TWO = 2;
++    public string $publicThree;
+ 
+-    const CONST_THREE = 3;
++    /**************************
++     * Public static properties
++     **************************/
+ 
+-    private function privateOne(): void {}
+-
+-
+     public static string $publicStaticOne;
+ 
+     public static string $publicStaticTwo;
+@@ @@
+ 
+     public static string $publicStaticThree;
+ 
++    /*********************
++     * Internal properties
++     *********************/
+ 
+-    protected function protectedOne(): void {}
++    protected string $protectedOne;
+ 
+-    protected function protectedTwo(): void {}
++    protected string $protectedTwo;
+ 
+-    public string $publicOne;
++    private string $privateOne;
+ 
+-    public string $publicTwo;
++    /****************************
++     * Internal static properties
++     ****************************/
+ 
+-    public string $publicThree;
++    protected static string $protectedStaticOne;
+ 
+-    protected static function protectedStaticOne(): void {}
++    protected static string $protectedStaticTwo;
+ 
+-    protected static function protectedStaticTwo(): void {}
++    private static string $privateStaticOne;
+ 
+-    private static function privateStaticOne(): void {}
++    /****************
++     * Public methods
++     ****************/
+ 
+-    private static string $privateStaticOne;
++    public function publicOne(): void {}
+ 
++    public function publicTwo(): void {}
++
++    public function publicThree(): void {}
++
++    /***********************
++     * Public static methods
++     ***********************/
++
+     public static function publicStaticOne(): void {}
+ 
+     public static function publicStaticTwo(): void {}
+@@ @@
+ 
+     public static function publicStaticThree(): void {}
+ 
+-    protected string $protectedOne;
++    /******************
++     * Internal methods
++     ******************/
+ 
+-    protected string $protectedTwo;
++    protected function protectedOne(): void {}
+ 
+-    private string $privateOne;
++    protected function protectedTwo(): void {}
++
++    private function privateOne(): void {}
++
++    /*************************
++     * Internal static methods
++     *************************/
++
++    protected static function protectedStaticOne(): void {}
++
++    protected static function protectedStaticTwo(): void {}
++
++    private static function privateStaticOne(): void {}
+ }
+\ No newline at end of file
+```
+
+
 ## References
 
 - Class: [`Live627\PhpCsFixer\CustomFixers\SectionCommentsFixer`](../src\SectionCommentsFixer.php)
