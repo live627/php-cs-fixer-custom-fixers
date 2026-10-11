@@ -17,10 +17,6 @@ return (new PhpCsFixer\Config())
 	->setRules([
 		'@PER-CS2x0' => true,
 
-		// PSR12 overrides.
-		'no_break_comment' => false,  // A bit buggy with comments.
-		'statement_indentation' => false, // A bit buggy with comments.
-
 		// Array notation.
 		'array_syntax' => ['syntax' => 'short'],
 		'normalize_index_brace' => true,

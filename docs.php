@@ -260,8 +260,7 @@ foreach ($iterator as $file) {
 		],
 	];
 
-	if ($test_cases !== [])
-	{
+	if ($test_cases !== []) {
 		$markdown[] = '## Test Cases';
 		$markdown[] = '';
 		$markdown[] = 'These examples are taken from the fixer\'s PHPUnit test cases.';
@@ -271,22 +270,19 @@ foreach ($iterator as $file) {
 
 	$advanced_examples = [];
 
-	foreach ($integration_tests[$fixer->getName()] ?? [] as $file => $test)
-	{
+	foreach ($integration_tests[$fixer->getName()] ?? [] as $file => $test) {
 		$advanced_examples[$file] = $test;
 	}
 
 	$advanced_examples = array_slice($advanced_examples, 0, 3);
 
-	if ($advanced_examples !== [])
-	{
+	if ($advanced_examples !== []) {
 		$markdown[] = '## Advanced Examples';
 		$markdown[] = '';
 		$markdown[] = 'These examples demonstrate how this fixer interacts with other fixers in an integration test.';
 		$markdown[] = '';
 
-		foreach ($advanced_examples as $test)
-		{
+		foreach ($advanced_examples as $test) {
 			$markdown[] = formatIntegrationTest($test);
 		}
 	}
@@ -467,29 +463,24 @@ function findIntegrationTests(string $tests_dir): array
 		),
 	);
 
-	foreach ($iterator as $file)
-	{
-		if (!$file->isFile() || $file->getExtension() !== 'test')
-		{
+	foreach ($iterator as $file) {
+		if (!$file->isFile() || $file->getExtension() !== 'test') {
 			continue;
 		}
 
 		$contents = file_get_contents($file->getPathname());
 
-		if ($contents === false)
-		{
+		if ($contents === false) {
 			continue;
 		}
 
 		$sections = parseIntegrationTestSections($contents);
 
-		if (!isset($sections['TEST'], $sections['RULESET'], $sections['EXPECT']))
-		{
+		if (!isset($sections['TEST'], $sections['RULESET'], $sections['EXPECT'])) {
 			continue;
 		}
 
-		try
-		{
+		try {
 			$ruleset = json_decode(
 				$sections['RULESET'],
 				true,
@@ -505,14 +496,11 @@ function findIntegrationTests(string $tests_dir): array
 					JSON_THROW_ON_ERROR,
 				)
 				: [];
-		}
-		catch (JsonException)
-		{
+		} catch (JsonException) {
 			continue;
 		}
 
-		if (!is_array($ruleset) || !is_array($config))
-		{
+		if (!is_array($ruleset) || !is_array($config)) {
 			continue;
 		}
 
@@ -527,13 +515,11 @@ function findIntegrationTests(string $tests_dir): array
 
 		$rule_names = array_keys($ruleset);
 
-		foreach ($rule_names as $rule_name)
-		{
+		foreach ($rule_names as $rule_name) {
 			$integration_tests[$rule_name][$file->getPathname()] = $test;
 		}
 
-		foreach ($config['customFixers'] ?? [] as $class_name)
-		{
+		foreach ($config['customFixers'] ?? [] as $class_name) {
 			$integration_tests[$class_name][$file->getPathname()] = $test;
 		}
 	}
@@ -559,8 +545,7 @@ function parseIntegrationTestSections(string $contents): array
 
 	$sections = [];
 
-	foreach ($matches as $match)
-	{
+	foreach ($matches as $match) {
 		$sections[$match[1]] = rtrim($match[2]);
 	}
 
@@ -629,10 +614,8 @@ function findFixerTestClass(string $tests_dir, string $fixer_class): ?string
 		),
 	);
 
-	foreach ($iterator as $file)
-	{
-		if (!$file->isFile() || $file->getFilename() !== $test_file_name)
-		{
+	foreach ($iterator as $file) {
+		if (!$file->isFile() || $file->getFilename() !== $test_file_name) {
 			continue;
 		}
 
@@ -642,13 +625,11 @@ function findFixerTestClass(string $tests_dir, string $fixer_class): ?string
 
 		$new_classes = array_diff(get_declared_classes(), $before);
 
-		foreach ($new_classes as $class_name)
-		{
+		foreach ($new_classes as $class_name) {
 			if (
 				str_ends_with($class_name, 'Test')
 				&& is_subclass_of($class_name, AbstractFixerTestCase::class)
-			)
-			{
+			) {
 				return $class_name;
 			}
 		}
@@ -668,23 +649,18 @@ function findFixerTestClass(string $tests_dir, string $fixer_class): ?string
 function findFixerTestCases(
 	string $tests_dir,
 	string $fixer_class,
-): array
-{
+): array {
 	$test_class = findFixerTestClass($tests_dir, $fixer_class);
 
-	if ($test_class === null || !method_exists($test_class, 'provideFixCases'))
-	{
+	if ($test_class === null || !method_exists($test_class, 'provideFixCases')) {
 		return [];
 	}
 
 	$cases = [];
 
-	try
-	{
-		foreach ($test_class::provideFixCases() as $name => $case)
-		{
-			if (!is_array($case) || !isset($case[0]))
-			{
+	try {
+		foreach ($test_class::provideFixCases() as $name => $case) {
+			if (!is_array($case) || !isset($case[0])) {
 				continue;
 			}
 
@@ -693,9 +669,7 @@ function findFixerTestCases(
 				'input' => $case[1] ?? null,
 			];
 		}
-	}
-	catch (Throwable)
-	{
+	} catch (Throwable) {
 		return [];
 	}
 
@@ -718,25 +692,21 @@ function createTestCaseDiff(string $input, string $expected): string
 	$diff = [];
 	$max_lines = max(count($input_lines), count($expected_lines));
 
-	for ($i = 0; $i < $max_lines; ++$i)
-	{
+	for ($i = 0; $i < $max_lines; ++$i) {
 		$input_line = $input_lines[$i] ?? null;
 		$expected_line = $expected_lines[$i] ?? null;
 
-		if ($input_line === $expected_line)
-		{
+		if ($input_line === $expected_line) {
 			$diff[] = '  ' . ($input_line ?? '');
 
 			continue;
 		}
 
-		if ($input_line !== null)
-		{
+		if ($input_line !== null) {
 			$diff[] = '- ' . $input_line;
 		}
 
-		if ($expected_line !== null)
-		{
+		if ($expected_line !== null) {
 			$diff[] = '+ ' . $expected_line;
 		}
 	}
@@ -755,22 +725,22 @@ function formatTestCases(array $test_cases, string $test_name, array $test_names
 {
 	$markdown = '';
 
-	foreach ($test_cases as $name => $case)
-	if (in_array($name, $test_names[$test_name]))
-	{
-		$input = $case['input'] ?? $case['expected'];
+	foreach ($test_cases as $name => $case) {
+		if (in_array($name, $test_names[$test_name] ?? [])) {
+			$input = $case['input'] ?? $case['expected'];
 
-		$markdown .= '### ' . $name . "\n\n";
+			$markdown .= '### ' . $name . "\n\n";
 
-		$differ = new Differ(
-			new UnifiedDiffOutputBuilder(
-				"--- Original\n+++ Fixed\n",
-			),
-		);
+			$differ = new Differ(
+				new UnifiedDiffOutputBuilder(
+					"--- Original\n+++ Fixed\n",
+				),
+			);
 
-		$markdown .= "```diff\n";
-		$markdown .= rtrim($differ->diff($input . "\n", $case['expected'] . "\n"));
-		$markdown .= "\n```\n\n";
+			$markdown .= "```diff\n";
+			$markdown .= rtrim($differ->diff($input . "\n", $case['expected'] . "\n"));
+			$markdown .= "\n```\n\n";
+		}
 	}
 
 	return $markdown;
