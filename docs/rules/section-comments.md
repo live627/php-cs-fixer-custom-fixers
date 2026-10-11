@@ -6,14 +6,8 @@ Inserts sectioning comments. This is meant to be used in combination with the `o
 
 This fixer has priority `54`. Higher priorities are executed first.
 
-**Must run before:**
-
-- `IndentationTypeFixer` — priority `50`
-- `NoExtraBlankLinesFixer` — priority `-20`
-
 **Must run after:**
 
-- `ClassAttributesSeparationFixer` — priority `55`
 - `OrderedClassElementsFixer` — priority `65`
 
 ## Examples
@@ -24,6 +18,15 @@ This fixer has priority `54`. Higher priorities are executed first.
 --- Original
 +++ Fixed
 @@ @@
+ 
+ class Foo
+ {
++	/*****************
++	 * Class constants
++	 *****************/
++
+ 	/**
+ 	 *
  	 */
  	const MY_CONSTANT = 1;
  
@@ -287,7 +290,6 @@ These examples demonstrate how this fixer interacts with other fixers in an inte
         ],
         'sort_algorithm' => 'none',
     ],
-    'class_attributes_separation' => true,
     'SMF/section_comments' => true,
 ]
 ```
@@ -308,10 +310,10 @@ These examples demonstrate how this fixer interacts with other fixers in an inte
 +	public const CONST_ONE = 1;
  
 -	public function publicOne(): void {}
-+	public const CONST_TWO = 2;
++	const CONST_TWO = 2;
  
 -	public function publicTwo(): void {}
-+	public const CONST_THREE = 3;
++	private const CONST_THREE = 3;
  
 -	public function publicThree(): void {}
 +	/*******************
@@ -321,10 +323,10 @@ These examples demonstrate how this fixer interacts with other fixers in an inte
 -	public const CONST_ONE = 1;
 +	public string $publicOne;
  
--	public const CONST_TWO = 2;
+-	const CONST_TWO = 2;
 +	public string $publicTwo;
  
--	public const CONST_THREE = 3;
+-	private const CONST_THREE = 3;
 +	public string $publicThree;
  
 -	private function privateOne(): void {}
@@ -410,168 +412,6 @@ These examples demonstrate how this fixer interacts with other fixers in an inte
 +	protected static function protectedStaticTwo(): void {}
 +
 +	private static function privateStaticOne(): void {}
- }
-\ No newline at end of file
-```
-
-
-### Integration example # 2
-
-**Ruleset:**
-
-```php
-[
-    'ordered_class_elements' => [
-        'order' => [
-            'use_trait',
-            'case',
-            'constant_public',
-            'constant_protected',
-            'constant_private',
-            'property_public',
-            'property_public_static',
-            'property_protected',
-            'property_private',
-            'property_protected_static',
-            'property_private_static',
-            'method_public',
-            'method_public_static',
-            'method_protected',
-            'method_private',
-            'method_protected_static',
-            'method_private_static',
-        ],
-        'sort_algorithm' => 'none',
-    ],
-    'modifier_keywords' => true,
-    'no_extra_blank_lines' => true,
-    'indentation_type' => true,
-    'class_attributes_separation' => true,
-    'SMF/section_comments' => true,
-]
-```
-
-```diff
---- Original
-+++ Fixed
-@@ @@
- 
- class Foo
- {
--    protected static string $protectedStaticOne;
-+    /*****************
-+     * Class constants
-+     *****************/
- 
--    protected static string $protectedStaticTwo;
-+    public const CONST_ONE = 1;
- 
--    public function publicOne(): void {}
-+    public const CONST_TWO = 2;
- 
--    function publicTwo(): void {}
-+    public const CONST_THREE = 3;
- 
--    function publicThree(): void {}
-+    /*******************
-+     * Public properties
-+     *******************/
- 
-+    public string $publicOne;
- 
--    public const CONST_ONE = 1;
-+    public string $publicTwo;
- 
--    const CONST_TWO = 2;
-+    public string $publicThree;
- 
--    const CONST_THREE = 3;
-+    /**************************
-+     * Public static properties
-+     **************************/
- 
--    private function privateOne(): void {}
--
--
-     public static string $publicStaticOne;
- 
-     public static string $publicStaticTwo;
-@@ @@
- 
-     public static string $publicStaticThree;
- 
-+    /*********************
-+     * Internal properties
-+     *********************/
- 
--    protected function protectedOne(): void {}
-+    protected string $protectedOne;
- 
--    protected function protectedTwo(): void {}
-+    protected string $protectedTwo;
- 
--    public string $publicOne;
-+    private string $privateOne;
- 
--    public string $publicTwo;
-+    /****************************
-+     * Internal static properties
-+     ****************************/
- 
--    public string $publicThree;
-+    protected static string $protectedStaticOne;
- 
--    protected static function protectedStaticOne(): void {}
-+    protected static string $protectedStaticTwo;
- 
--    protected static function protectedStaticTwo(): void {}
-+    private static string $privateStaticOne;
- 
--    private static function privateStaticOne(): void {}
-+    /****************
-+     * Public methods
-+     ****************/
- 
--    private static string $privateStaticOne;
-+    public function publicOne(): void {}
- 
-+    public function publicTwo(): void {}
-+
-+    public function publicThree(): void {}
-+
-+    /***********************
-+     * Public static methods
-+     ***********************/
-+
-     public static function publicStaticOne(): void {}
- 
-     public static function publicStaticTwo(): void {}
-@@ @@
- 
-     public static function publicStaticThree(): void {}
- 
--    protected string $protectedOne;
-+    /******************
-+     * Internal methods
-+     ******************/
- 
--    protected string $protectedTwo;
-+    protected function protectedOne(): void {}
- 
--    private string $privateOne;
-+    protected function protectedTwo(): void {}
-+
-+    private function privateOne(): void {}
-+
-+    /*************************
-+     * Internal static methods
-+     *************************/
-+
-+    protected static function protectedStaticOne(): void {}
-+
-+    protected static function protectedStaticTwo(): void {}
-+
-+    private static function privateStaticOne(): void {}
  }
 \ No newline at end of file
 ```

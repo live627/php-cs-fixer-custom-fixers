@@ -99,7 +99,7 @@ These examples are taken from the fixer's PHPUnit test cases.
 
 These examples demonstrate how this fixer interacts with other fixers in an integration test.
 
-### Integration example # 3
+### Integration example # 2
 
 **Ruleset:**
 

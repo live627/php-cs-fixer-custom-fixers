@@ -24,7 +24,6 @@ Integration of fixers: ordered_class_elements,SMF/section_comments.
 		],
 		"sort_algorithm": "none"
 	},
-	"class_attributes_separation": true,
 	"SMF/section_comments": true
 }
 --CONFIG--
@@ -43,9 +42,9 @@ class Foo
 
 	public const CONST_ONE = 1;
 
-	public const CONST_TWO = 2;
+	const CONST_TWO = 2;
 
-	public const CONST_THREE = 3;
+	private const CONST_THREE = 3;
 
 	/*******************
 	 * Public properties
@@ -145,9 +144,9 @@ class Foo
 
 	public const CONST_ONE = 1;
 
-	public const CONST_TWO = 2;
+	const CONST_TWO = 2;
 
-	public const CONST_THREE = 3;
+	private const CONST_THREE = 3;
 
 	private function privateOne(): void {}
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Live627\PhpCsFixer\CustomFixers\SectionCommentsFixer;
 use PhpCsFixer\AbstractFixer;
 use PhpCsFixer\Tests\Test\AbstractFixerTestCase;
+use PhpCsFixer\WhitespacesFixerConfig;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 final class SectionCommentsFixerTest extends AbstractFixerTestCase
@@ -17,6 +18,46 @@ final class SectionCommentsFixerTest extends AbstractFixerTestCase
 	public function testFix(string $expected, ?string $input = null): void
 	{
 		$this->doTest($expected, $input);
+	}
+
+	public function testWithWhitespacesConfig(): void
+	{
+		$this->fixer->setWhitespacesConfig(new WhitespacesFixerConfig("\t", "\r\n"));
+
+		$expected = <<<'PHP'
+			<?php
+
+			class Foo
+			{
+				/*******************
+				 * Public properties
+				 *******************/
+
+				public string $a;
+
+				/****************
+				 * Public methods
+				 ****************/
+
+				public function b(): void {}
+			}
+			PHP;
+
+		$input = <<<'PHP'
+			<?php
+
+			class Foo
+			{
+				public string $a;
+
+				public function b(): void {}
+			}
+			PHP;
+
+		$this->doTest(
+			str_replace("\n", "\r\n", $expected),
+			str_replace("\n", "\r\n", $input),
+		);
 	}
 
 	/***********************
@@ -1025,6 +1066,527 @@ final class SectionCommentsFixerTest extends AbstractFixerTestCase
 					#[Test]
 					#[DataProvider('provideFixCases')]
 					public function testFix(): void {}
+				}
+				PHP,
+		];
+
+		yield 'adds whitespace to sections' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public string $a;
+
+					/****************
+					 * Public methods
+					 ****************/
+
+					public function b(): void {}
+				}
+
+				class Bar
+				{
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public string $c;
+
+					/****************
+					 * Public methods
+					 ****************/
+
+					public function d(): void {}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					public string $a;
+					public function b(): void {}
+				}
+
+				class Bar
+				{
+					public string $c;
+					public function d(): void {}
+				}
+				PHP,
+		];
+
+		yield 'every class in a file gets its own sections' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public string $a;
+
+					/****************
+					 * Public methods
+					 ****************/
+
+					public function b(): void {}
+				}
+
+				class Bar
+				{
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public string $c;
+
+					/****************
+					 * Public methods
+					 ****************/
+
+					public function d(): void {}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					public string $a;
+
+					public function b(): void {}
+				}
+
+				class Bar
+				{
+					public string $c;
+
+					public function d(): void {}
+				}
+				PHP,
+		];
+
+		yield 'sections in later classes are kept' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public string $a;
+				}
+
+				class Bar
+				{
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public string $b;
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					public string $a;
+				}
+
+				class Bar
+				{
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public string $b;
+				}
+				PHP,
+		];
+
+		yield 'code that is already correct is left alone' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					/*****************
+					 * Class constants
+					 *****************/
+
+					public const A = 1;
+
+					/*******************
+					 * Public properties
+					 *******************/
+
+					#[Attr]
+					public string $b; // trailing
+
+					/****************
+					 * Public methods
+					 ****************/
+
+					/**
+					 * Docblock.
+					 */
+					public function c(): void {}
+				}
+				PHP,
+		];
+
+		yield 'enum with only methods has no enum cases section' => [
+			<<<'PHP'
+				<?php
+
+				enum Suit
+				{
+					/****************
+					 * Public methods
+					 ****************/
+
+					public function label(): string
+					{
+						return 'x';
+					}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				enum Suit
+				{
+					public function label(): string
+					{
+						return 'x';
+					}
+				}
+				PHP,
+		];
+
+		yield 'case in a switch is not an enum case' => [
+			<<<'PHP'
+				<?php
+
+				enum Nothing
+				{
+					/****************
+					 * Public methods
+					 ****************/
+
+					public function pick(int $x): int
+					{
+						switch ($x) {
+							case 1:
+								return 1;
+							default:
+								return 2;
+						}
+					}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				enum Nothing
+				{
+					public function pick(int $x): int
+					{
+						switch ($x) {
+							case 1:
+								return 1;
+							default:
+								return 2;
+						}
+					}
+				}
+				PHP,
+		];
+
+		yield 'promoted constructor parameters are not properties' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					/****************
+					 * Public methods
+					 ****************/
+
+					public function __construct(
+						private string $a,
+						public int $b = 0,
+					) {}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					public function __construct(
+						private string $a,
+						public int $b = 0,
+					) {}
+				}
+				PHP,
+		];
+
+		yield 'anonymous classes are left alone' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					/****************
+					 * Public methods
+					 ****************/
+
+					public function bar(): object
+					{
+						return new class {
+							public string $a;
+
+							public function b(): void {}
+						};
+					}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					public function bar(): object
+					{
+						return new class {
+							public string $a;
+
+							public function b(): void {}
+						};
+					}
+				}
+				PHP,
+		];
+
+		yield 'sections inside anonymous classes are not removed' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					/****************
+					 * Public methods
+					 ****************/
+
+					public function bar(): object
+					{
+						return new class {
+							/*******************
+							 * Public properties
+							 *******************/
+
+							public string $a;
+						};
+					}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					public function bar(): object
+					{
+						return new class {
+							/*******************
+							 * Public properties
+							 *******************/
+
+							public string $a;
+						};
+					}
+				}
+				PHP,
+		];
+
+		yield 'trailing comments stay with their statements' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{ // opening
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public string $a; // trailing
+
+					/****************
+					 * Public methods
+					 ****************/
+
+					public function b(): void {}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{ // opening
+					public string $a; // trailing
+
+					public function b(): void {}
+				}
+				PHP,
+		];
+
+		yield 'modifiers in the legacy order' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					/***********************
+					 * Public static methods
+					 ***********************/
+
+					static public function bar(): void {}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					static public function bar(): void {}
+				}
+				PHP,
+		];
+
+		yield 'elements without a visibility are public' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					/*******************
+					 * Public properties
+					 *******************/
+
+					var $a;
+
+					/****************
+					 * Public methods
+					 ****************/
+
+					function b(): void {}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					var $a;
+
+					function b(): void {}
+				}
+				PHP,
+		];
+
+		yield 'several properties in one statement' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public string $a, $b;
+
+					/*********************
+					 * Internal properties
+					 *********************/
+
+					protected string $c;
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					public string $a, $b;
+
+					protected string $c;
+				}
+				PHP,
+		];
+
+		yield 'trait imports do not get a section' => [
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					use Bar;
+
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public string $a;
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class Foo
+				{
+					use Bar;
+
+					public string $a;
+				}
+				PHP,
+		];
+
+		yield 'indentation follows the code' => [
+			<<<'PHP'
+				<?php
+
+				namespace Foo {
+					class Bar
+					{
+						/*******************
+						 * Public properties
+						 *******************/
+
+						public string $a;
+					}
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				namespace Foo {
+					class Bar
+					{
+						public string $a;
+					}
 				}
 				PHP,
 		];
