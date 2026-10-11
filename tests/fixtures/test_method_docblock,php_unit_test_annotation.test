@@ -1,0 +1,83 @@
+--TEST--
+Integration of fixers: Live627/test_method_docblock,php_unit_test_annotation.
+--RULESET--
+{
+    "Live627/test_method_docblock": true,
+    "php_unit_test_annotation": {
+        "style": "prefix"
+    }
+}
+--CONFIG--
+{
+    "indent": "\t",
+    "lineEnding": "\n",
+    "customFixers": ["Live627\\PhpCsFixer\\CustomFixers\\TestMethodDocblockFixer"]
+}
+--SETTINGS--
+{
+    "isRiskyAllowed": true
+}
+--EXPECT--
+<?php
+
+use PHPUnit\Framework\TestCase;
+
+class FooTest extends TestCase
+{
+	/**
+	 * Something works.
+	 *
+	 * Expected: TODO describe the call and the assertion result.
+	 */
+	public function testSomethingWorks(): void
+	{
+	}
+
+	/**
+	 * Other thing.
+	 *
+	 * Expected: Passes.
+	 *
+	 */
+	public function testOtherThing(): void
+	{
+	}
+
+	/**
+	 * Yabba dabba doo.
+	 *
+	 * Expected: TODO describe the call and the assertion result.
+	 */
+	public function testYabba_dabba_doo(): void
+	{
+	}
+}
+
+--INPUT--
+<?php
+
+use PHPUnit\Framework\TestCase;
+
+class FooTest extends TestCase
+{
+	public function testSomethingWorks(): void
+	{
+	}
+
+	/**
+	 * Other thing.
+	 *
+	 * Expected: Passes.
+	 * @test
+	 */
+	public function otherThing(): void
+	{
+	}
+
+	/**
+	 * @test
+	 */
+	public function yabba_dabba_doo(): void
+	{
+	}
+}

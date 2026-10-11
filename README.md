@@ -73,6 +73,9 @@ vendor/bin/php-cs-fixer fix
 - [`Live627/snake_case_identifiers`](docs/rules/snake-case-identifiers.md) (`Live627\PhpCsFixer\CustomFixers\SnakeCaseIdentifiersFixer`)
    - Converts camelCase identifiers to snake_case.
 
+- [`Live627/test_method_docblock`](docs/rules/test-method-docblock.md) (`Live627\PhpCsFixer\CustomFixers\TestMethodDocblockFixer`)
+   - Adds missing docblocks, summaries and `Expected:` sections to public test methods and aligns them with the method declaration.
+
 - [`SMF/section_comments`](docs/rules/section-comments.md) (`Live627\PhpCsFixer\CustomFixers\SectionCommentsFixer`)
    - Inserts sectioning comments. This is meant to be used in combination with the `ordered_class_elements` rule.
 

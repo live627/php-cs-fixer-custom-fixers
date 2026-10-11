@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 require __DIR__ . '/vendor/autoload.php';
 
 $classes = [
@@ -17,6 +16,10 @@ $classes = [
 	[
 		'Live627\PhpCsFixer\CustomFixers\GlobalNativeNamespaceImportFixer',
 		'GlobalNativeNamespaceImportFixerTest',
+	],
+	[
+		'Live627\PhpCsFixer\CustomFixers\TestMethodDocblockFixer',
+		'TestMethodDocblockFixerTest',
 	],
 ];
 
@@ -109,47 +112,47 @@ foreach ($classes as [$class, $test]) {
 		);
 	}
 
-if ($timer_samples !== []) {
-	echo "\nSection Timings\n";
-	echo "===============\n\n";
+	if ($timer_samples !== []) {
+		echo "\nSection Timings\n";
+		echo "===============\n\n";
 
-	$stats = [];
+		$stats = [];
 
-	foreach ($timer_samples as $section => $samples) {
-		sort($samples);
+		foreach ($timer_samples as $section => $samples) {
+			sort($samples);
 
-		$avg = array_sum($samples) / count($samples);
-		$median = $samples[(int) floor(count($samples) / 2)];
+			$avg = array_sum($samples) / count($samples);
+			$median = $samples[(int) floor(count($samples) / 2)];
 
-		$stats[$section] = [
-			'avg' => $avg,
-			'median' => $median,
-		];
-	}
+			$stats[$section] = [
+				'avg' => $avg,
+				'median' => $median,
+			];
+		}
 
-	uasort(
-		$stats,
-		static fn(array $a, array $b): int => $b['avg'] <=> $a['avg'],
-	);
-
-	printf(
-		"%-30s %14s %14s\n",
-		'Section',
-		'Median (µs)',
-		'Avg (µs)',
-	);
-
-	echo str_repeat('-', 60) . "\n";
-
-	foreach ($stats as $section => $data) {
-		printf(
-			"%-30s %14.2f %14.2f\n",
-			$section,
-			$data['median'] / 1e3,
-			$data['avg'] / 1e3,
+		uasort(
+			$stats,
+			static fn(array $a, array $b): int => $b['avg'] <=> $a['avg'],
 		);
-	}
 
-	echo "\n";
-}
+		printf(
+			"%-30s %14s %14s\n",
+			'Section',
+			'Median (µs)',
+			'Avg (µs)',
+		);
+
+		echo str_repeat('-', 60) . "\n";
+
+		foreach ($stats as $section => $data) {
+			printf(
+				"%-30s %14.2f %14.2f\n",
+				$section,
+				$data['median'] / 1e3,
+				$data['avg'] / 1e3,
+			);
+		}
+
+		echo "\n";
+	}
 }
