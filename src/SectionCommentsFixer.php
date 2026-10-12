@@ -295,7 +295,7 @@ final class SectionCommentsFixer extends AbstractFixer implements WhitespacesAwa
 				$slices[$insert_at + 1] = [new Token([T_WHITESPACE, $after])];
 			}
 		} else {
-			$slices[$insert_at] = [
+			$insert = [
 				new Token([T_COMMENT, $comment]),
 				new Token([T_WHITESPACE, $after]),
 			];
@@ -304,7 +304,13 @@ final class SectionCommentsFixer extends AbstractFixer implements WhitespacesAwa
 		if ($tokens[$insert_at - 1]->isWhitespace()) {
 			$this->setWhitespace($tokens, $insert_at - 1, $before);
 		} else {
-			$slices[$insert_at - 1] = [new Token([T_WHITESPACE, $before])];
+			// Slices go in front of the token at their index, so this has to
+			// be part of the slice at $insert_at, ahead of the comment.
+			array_unshift($insert, new Token([T_WHITESPACE, $before]));
+		}
+
+		if ($insert !== []) {
+			$slices[$insert_at] = $insert;
 		}
 	}
 

@@ -58,6 +58,30 @@ final class SectionCommentsFixerTest extends AbstractFixerTestCase
 			str_replace("\n", "\r\n", $expected),
 			str_replace("\n", "\r\n", $input),
 		);
+
+		$this->fixer->setWhitespacesConfig(new WhitespacesFixerConfig("\t", "\n"));
+
+		$this->doTest(
+			<<<'PHP'
+				<?php
+
+				class A
+				{
+					/*******************
+					 * Public properties
+					 *******************/
+
+					public $a;
+				}
+				PHP,
+			<<<'PHP'
+				<?php
+
+				class A
+				{public $a;
+				}
+				PHP,
+		);
 	}
 
 	/***********************
