@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Live627\PhpCsFixer\CustomFixers;
 
-use Live627\PhpCsFixer\CustomFixers\Analyzer\ClassyAnalyzer;
 use PhpCsFixer\AbstractFixer;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
 use PhpCsFixer\FixerDefinition\FixerDefinitionInterface;
+use PhpCsFixer\Tokenizer\Analyzer\ClassyAnalyzer;
 use PhpCsFixer\Tokenizer\Analyzer\NamespaceUsesAnalyzer;
 use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
