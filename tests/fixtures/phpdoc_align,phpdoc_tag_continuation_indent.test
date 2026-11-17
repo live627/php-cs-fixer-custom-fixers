@@ -1,0 +1,66 @@
+--TEST--
+Integration of fixers: phpdoc_align,Live627/phpdoc_tag_continuation_indent.
+--RULESET--
+{
+    "phpdoc_align": true,
+    "Live627/phpdoc_tag_continuation_indent": {
+        "indent": 3
+    }
+}
+--CONFIG--
+{
+    "customFixers": [
+        "Live627\\PhpCsFixer\\CustomFixers\\PhpdocTagContinuationIndentFixer"
+    ]
+}
+--EXPECT--
+<?php
+
+class Foo
+{
+	/**
+	 * Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.
+	 * Praesent libero. Sed cursus ante dapibus diam.
+	 *
+	 * Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+	 * Praesent mauris. Fusce nec tellus sed augue semper porta.
+	 *
+	 * Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu
+	 * ad litora torquent per conubia nostra, per inceptos himenaeos.
+	 *
+	 * @param string $name  The name of the item.
+	 *    Additional information about the name.
+	 *    Further details about its expected format.
+	 * @param int    $count Number of items.
+	 *    Additional information about the count.
+	 */
+	public function doSomething(string $name, int $count): void
+	{
+	}
+}
+
+--INPUT--
+<?php
+
+class Foo
+{
+	/**
+	 * Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.
+	 * Praesent libero. Sed cursus ante dapibus diam.
+	 *
+	 * Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+	 * Praesent mauris. Fusce nec tellus sed augue semper porta.
+	 *
+	 * Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu
+	 * ad litora torquent per conubia nostra, per inceptos himenaeos.
+	 *
+	 * @param string $name The name of the item.
+	 *        Additional information about the name.
+	 *        Further details about its expected format.
+	 * @param int $count Number of items.
+	 *        Additional information about the count.
+	 */
+	public function doSomething(string $name, int $count): void
+	{
+	}
+}

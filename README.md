@@ -70,6 +70,9 @@ vendor/bin/php-cs-fixer fix
 - [`Live627/global_native_namespace_import`](docs/rules/global-native-namespace-import.md) (`Live627\PhpCsFixer\CustomFixers\GlobalNativeNamespaceImportFixer`)
    - Fully qualifies references to PHP internal classes, interfaces, and traits and removes redundant import statements.
 
+- [`Live627/phpdoc_tag_continuation_indent`](docs/rules/phpdoc-tag-continuation-indent.md) (`Live627\PhpCsFixer\CustomFixers\PhpdocTagContinuationIndentFixer`)
+   - Continuation lines of PHPDoc tags must use the configured indentation.
+
 - [`Live627/snake_case_identifiers`](docs/rules/snake-case-identifiers.md) (`Live627\PhpCsFixer\CustomFixers\SnakeCaseIdentifiersFixer`)
    - Converts camelCase identifiers to snake_case.
 
