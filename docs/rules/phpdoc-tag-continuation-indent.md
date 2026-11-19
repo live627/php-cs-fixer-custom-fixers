@@ -2,6 +2,8 @@
 
 Continuation lines of PHPDoc tags must use the configured indentation.
 
+Nonempty continuation lines are indented by the configured number of spaces, plus their existing indentation relative to the least-indented continuation line belonging to the same tag. This preserves relative indentation in constructs such as nested lists, code examples, and array shapes.
+
 ## Priority
 
 This fixer has priority `-43`. Higher priorities are executed first.

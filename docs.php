@@ -104,6 +104,11 @@ foreach ($iterator as $file) {
 	$markdown[] = $definition->getSummary();
 	$markdown[] = '';
 
+	if ($definition->getDescription() !== null) {
+		$markdown[] = $definition->getDescription();
+		$markdown[] = '';
+	}
+
 	$markdown[] = '## Priority';
 	$markdown[] = '';
 	$markdown[] = 'This fixer has priority `' . $fixer->getPriority() . '`. Higher priorities are executed first.';
