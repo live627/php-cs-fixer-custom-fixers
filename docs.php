@@ -281,9 +281,10 @@ foreach ($iterator as $file) {
 		$markdown[] = '';
 		$markdown[] = 'These examples demonstrate how this fixer interacts with other fixers in an integration test.';
 		$markdown[] = '';
+		$i = 0;
 
 		foreach ($advanced_examples as $test) {
-			$markdown[] = formatIntegrationTest($test);
+			$markdown[] = formatIntegrationTest(++$i, $test);
 		}
 	}
 
@@ -566,11 +567,9 @@ function parseIntegrationTestSections(string $contents): array
  *
  * @return string The generated Markdown.
  */
-function formatIntegrationTest(array $test): string
+function formatIntegrationTest(int $i, array $test): string
 {
-	static $i = 1;
-
-	$markdown = '### Integration example # ' . ($i++) . "\n\n";
+	$markdown = '### Integration example # ' . $i . "\n\n";
 
 	$markdown .= '**Ruleset:**' . "\n\n";
 	$markdown .= "```php\n";
