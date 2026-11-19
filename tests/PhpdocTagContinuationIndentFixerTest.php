@@ -232,6 +232,87 @@ final class PhpdocTagContinuationIndentFixerTest extends AbstractFixerTestCase
 				PHP,
 			['indent' => 2],
 		];
+
+		yield 'excludes exact tag names' => [
+			<<<'PHP'
+				<?php
+				/**
+				 * @param string $name Name.
+				 *   Preserve this indentation.
+				 * @param-out string $name Output.
+				 *    Normalize this indentation.
+				 */
+				PHP,
+			<<<'PHP'
+				<?php
+				/**
+				 * @param string $name Name.
+				 *   Preserve this indentation.
+				 * @param-out string $name Output.
+				 *   Normalize this indentation.
+				 */
+				PHP,
+			[
+				'exclude' => ['param'],
+			],
+		];
+
+		yield 'excludes matching tag patterns' => [
+			<<<'PHP'
+				<?php
+				/**
+				 * @phpstan-type Foo Bar.
+				 *       Preserve this indentation.
+				 * @phpstan-param Foo $value Description.
+				 *        Preserve this indentation too.
+				 * @param string $name Name.
+				 *    Normalize this indentation.
+				 */
+				PHP,
+			<<<'PHP'
+				<?php
+				/**
+				 * @phpstan-type Foo Bar.
+				 *       Preserve this indentation.
+				 * @phpstan-param Foo $value Description.
+				 *        Preserve this indentation too.
+				 * @param string $name Name.
+				 *       Normalize this indentation.
+				 */
+				PHP,
+			[
+				'exclude_patterns' => ['/^phpstan-/'],
+			],
+		];
+
+		yield 'combines exact and pattern exclusions' => [
+			<<<'PHP'
+				<?php
+				/**
+				 * @param string $name Name.
+				 *   Preserve this indentation.
+				 * @phpstan-type Foo Bar.
+				 *       Preserve this indentation too.
+				 * @return string Result.
+				 *    Normalize this indentation.
+				 */
+				PHP,
+			<<<'PHP'
+				<?php
+				/**
+				 * @param string $name Name.
+				 *   Preserve this indentation.
+				 * @phpstan-type Foo Bar.
+				 *       Preserve this indentation too.
+				 * @return string Result.
+				 *       Normalize this indentation.
+				 */
+				PHP,
+			[
+				'exclude' => ['param'],
+				'exclude_patterns' => ['/^phpstan-/'],
+			],
+		];
 	}
 
 	/******************

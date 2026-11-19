@@ -14,6 +14,26 @@ This fixer has priority `-43`. Higher priorities are executed first.
 
 ## Configuration
 
+### `exclude`
+
+PHPDoc tag names to exclude, without the leading `@`.
+
+**Default:**
+
+```php
+[] // empty array
+```
+
+### `exclude_patterns`
+
+Regular expressions matching PHPDoc tag names to exclude.
+
+**Default:**
+
+```php
+[] // empty array
+```
+
 ### `indent`
 
 Number of spaces following the standard PHPDoc prefix (` * `) on continuation lines.
@@ -63,6 +83,58 @@ Number of spaces following the standard PHPDoc prefix (` * `) on continuation li
 - *   Another continuation.
 + *     Continuation of the description.
 + *       Another continuation.
+  */
+```
+
+### Example #3
+
+**Configuration**
+
+```php
+[
+    'exclude' => [
+        'return',
+    ],
+]
+```
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ 
+ /**
+  * @param string $name Description.
+- * Continuation of the description.
+- *   Another continuation.
++ *    Continuation of the description.
++ *      Another continuation.
+  */
+```
+
+### Example #4
+
+**Configuration**
+
+```php
+[
+    'exclude_patterns' => [
+        '/^phpstan-/',
+    ],
+]
+```
+
+```diff
+--- Original
++++ Fixed
+@@ @@
+ 
+ /**
+  * @param string $name Description.
+- * Continuation of the description.
+- *   Another continuation.
++ *    Continuation of the description.
++ *      Another continuation.
   */
 ```
 
