@@ -3,9 +3,7 @@ Integration of fixers: phpdoc_align,Live627/phpdoc_tag_continuation_indent.
 --RULESET--
 {
     "phpdoc_align": true,
-    "Live627/phpdoc_tag_continuation_indent": {
-        "indent": 3
-    }
+    "Live627/phpdoc_tag_continuation_indent": true
 }
 --CONFIG--
 {
