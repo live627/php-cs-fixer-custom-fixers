@@ -60,6 +60,33 @@ Then run PHP-CS-Fixer:
 vendor/bin/php-cs-fixer fix
 ```
 
+## Development
+
+Install the development dependencies before running the checks or generating documentation:
+
+```bash
+composer install
+```
+
+The available Composer scripts are:
+
+- `composer lint` — check code formatting without changing files.
+- `composer lint-fix` — apply code formatting fixes.
+
+Run the PHPUnit test suite with:
+
+```bash
+vendor/bin/phpunit
+```
+
+Generate the fixer documentation and refresh the README's available-rules list with:
+
+```bash
+php docs.php
+```
+
+The documentation generator writes rule pages to `docs/rules/` and updates the auto-generated rules section in this README.
+
 <!-- BEGIN AUTO-GENERATED RULES -->
 
 ## Available Rules
